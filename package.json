@@ -1,0 +1,35 @@
+{
+  "name": "off-stage-server",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --exec 'babel-node --harmony-async-await' ./app.js",
+    "precommit": "lint-staged --verbose"
+  },
+  "devDependencies": {
+    "babel-cli": "6.24.1",
+    "babel-core": "6.25.0",
+    "babel-loader": "7.1.0",
+    "babel-plugin-root-import": "5.1.0",
+    "babel-preset-latest": "6.24.1",
+    "eslint": "4.0.0",
+    "eslint-config-prettier": "2.2.0",
+    "faker": "4.1.0",
+    "husky": "0.14.0",
+    "koa-logger": "3.0.0",
+    "lint-staged": "4.0.0",
+    "nodemon": "1.11.0",
+    "prettier": "1.4.4"
+  },
+  "dependencies": {
+    "koa": "2.3.0",
+    "koa-body": "2.1.0",
+    "koa-router": "7.2.1"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --single-quote --trailing-comma es5 --write",
+      "git add"
+    ]
+  }
+}
