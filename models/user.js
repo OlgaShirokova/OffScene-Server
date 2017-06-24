@@ -4,13 +4,23 @@ module.exports = function(sequelize, DataTypes) {
   const User = sequelize.define(
     'User',
     {
-      username: DataTypes.STRING,
+      email: DataTypes.STRING,
+      name: DataTypes.STRING,
+      role: DataTypes.INTEGER,
+      staff: DataTypes.BOOLEAN,
+      picture: DataTypes.STRING,
+      priceWe: DataTypes.INTEGER,
+      priceWd: DataTypes.INTEGER,
+      city: DataTypes.STRING,
+      lat: DataTypes.FLOAT,
+      long: DataTypes.FLOAT,
+      avgRating: DataTypes.INTEGER,
+      bankAccount: DataTypes.STRING,
+      swift: DataTypes.STRING,
     },
     {
-      classMethods: {
-        associate: function(models) {
-          User.hasMany(models.Event);
-        },
+      associate: function(models) {
+        models.User.hasMany(models.AwayDay);
       },
     }
   );
