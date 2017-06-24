@@ -3,11 +3,22 @@
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
+import config from '../config';
+const {
+  dbName,
+  user,
+  password,
+  host,
+  dialect,
+  logging,
+  storage,
+} = config.development;
 
-const sequelize = new Sequelize('offstage_db', 'root', 'root', {
-  host: '127.0.0.1',
-  dialect: 'sqlite',
-  logging: false,
+const sequelize = new Sequelize(dbName, user, password, {
+  host,
+  dialect,
+  logging,
+  storage,
 });
 
 const db = {};
@@ -23,8 +34,8 @@ fs
   });
 
 Object.keys(db).forEach(function(modelName) {
-  if ('associate' in db[modelName]) {
-    db[modelName].associate(db);
+  if (db[modelName].options.hasOwnProperty('associate')) {
+    db[modelName].options.associate(db);
   }
 });
 
@@ -32,3 +43,8 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 module.exports = db;
+
+sequelize.sync({
+  loggin: console.log,
+  force: true,
+});
