@@ -1,10 +1,10 @@
-import { encode, decode } from '~/utils/jwt';
+import { encodeJwt } from '~/utils/jwt';
 
-export function signInInfo(user, token) {
+export function signInSelector(user, token) {
   const { password, bankAccount, swift, ...userInfo } = user;
 
   return {
     ...userInfo,
-    authToken: encode(userInfo.id),
+    authToken: encodeJwt(userInfo.id),
   };
 }
