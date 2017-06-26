@@ -1,23 +1,23 @@
-'use strict';
-
-module.exports = function(sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
   const Event = sequelize.define(
-    'Event',
+    'event',
     {
       date: DataTypes.DATE,
       status: DataTypes.INTEGER,
-      djRating: DataTypes.INTEGER,
-      orgRating: DataTypes.INTEGER,
+      djRating: DataTypes.FLOAT,
+      orgRating: DataTypes.FLOAT,
       price: DataTypes.INTEGER,
       location: DataTypes.STRING,
+      lat: DataTypes.FLOAT,
+      long: DataTypes.FLOAT,
     },
     {
-      associate: function(models) {
-        models.Event.belongsTo(models.User, { as: 'dj' });
-        models.Event.belongsTo(models.User, { as: 'org' });
+      associate: function({ Event, User }) {
+        Event.belongsTo(User, { as: 'dj' });
+        Event.belongsTo(User, { as: 'org' });
       },
     }
   );
 
   return Event;
-};
+}
