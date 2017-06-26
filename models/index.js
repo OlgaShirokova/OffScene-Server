@@ -1,27 +1,19 @@
-'use strict';
+import fs from 'fs';
+import path from 'path';
+import Sequelize from 'sequelize';
+import config from '~/config';
+const { dbName, user, password, host, dialect, storage } = config.development;
 
-const fs = require('fs');
-const path = require('path');
-const Sequelize = require('sequelize');
-import config from '../config';
-const {
-  dbName,
-  user,
-  password,
+const connection = new Sequelize(dbName, user, password, {
   host,
   dialect,
-  logging,
-  storage,
-} = config.development;
-
-const sequelize = new Sequelize(dbName, user, password, {
-  host,
-  dialect,
-  logging,
   storage,
 });
 
-const db = {};
+const db = {
+  connection,
+  Sequelize,
+};
 
 fs
   .readdirSync(__dirname)
@@ -29,8 +21,8 @@ fs
     return file.indexOf('.') !== 0 && file !== 'index.js';
   })
   .forEach(function(file) {
-    var model = sequelize.import(path.join(__dirname, file));
-    db[model.name] = model;
+    const model = connection.import(path.join(__dirname, file));
+    db[`${model.name[0].toUpperCase()}${model.name.substr(1)}`] = model;
   });
 
 Object.keys(db).forEach(function(modelName) {
@@ -39,12 +31,9 @@ Object.keys(db).forEach(function(modelName) {
   }
 });
 
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
-
-module.exports = db;
-
-sequelize.sync({
+connection.sync({
   loggin: console.log,
   force: true,
 });
+
+export default db;
