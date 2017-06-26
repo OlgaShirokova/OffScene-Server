@@ -1,17 +1,19 @@
-'use strict';
-
-module.exports = function(sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
   const MusicGenre = sequelize.define(
-    'MusicGenre',
+    'musicGenre',
     {
-      name: DataTypes.STRING,
+      name: {
+        type: DataTypes.STRING,
+        primaryKey: true,
+      },
     },
     {
-      associate: function(models) {
-        models.MusicGenre.belongsToMany(models.User, { through: 'djGenres' });
+      associate: function({ MusicGenre, User }) {
+        MusicGenre.belongsToMany(User, { through: 'djGenres' });
       },
+      timestamps: false,
     }
   );
 
   return MusicGenre;
-};
+}
