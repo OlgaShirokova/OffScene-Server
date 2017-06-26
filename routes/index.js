@@ -1,13 +1,19 @@
 import Router from 'koa-router';
-import { UserController, EventController, AppController } from '~/controllers';
+import {
+  AuthController,
+  UserController,
+  EventController,
+  AppController,
+} from '~/controllers';
 
 const router = new Router();
 
 router
-  .get('/sign-in', UserController.signIn)
+  .get('/sign-in', AuthController.signIn)
+  .post('/sign-up', AuthController.signUp);
+router
   .get('/events', UserController.events) // get events that I'm or I had been involved (logged user)
   .get('/users/:id', UserController.userInfo) // get user info
-  .post('/sign-up', UserController.signUp)
   .post('/profile-picture', UserController.profilePicture) // upload profile picture
   .post('/users/:id/block', UserController.blockUser)
   .post('/away', UserController.away.post) // create away dates
