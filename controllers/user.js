@@ -1,9 +1,17 @@
 import db from '~/models';
-import { userInfoSelector } from '~/selectors/user';
-const { User, Calendar, AwayDay, MusicGenre } = db;
+import { userInfoSelector, eventsSelector } from '~/selectors/user';
+const { User, Calendar, AwayDay, Event } = db;
 
 async function events(ctx) {
-  ctx.body = 'events';
+  const role = ['djId', 'orgId'][ctx.user.get().role];
+
+  const events = await Event.findAll({
+    where: {
+      [role]: ctx.user.get().id,
+    },
+  });
+
+  ctx.body = eventsSelector(events);
 }
 
 async function userInfo(ctx) {
@@ -30,7 +38,7 @@ async function userInfo(ctx) {
     where: { userId: djId },
   });
 
-  user.dataValues.genres = genres ? genres : [];
+  user.dataValues.genres = genres ? genres : []; // TODO: change instead of returning null it atlways returned an empty array when there are no results
 
   ctx.body = userInfoSelector(user.get());
 }
