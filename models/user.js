@@ -25,11 +25,19 @@ export default function(sequelize, DataTypes) {
       swift: DataTypes.STRING,
     },
     {
-      associate: function({ User, AwayDay, Calendar, Event, BlockedUser }) {
+      associate: function({
+        User,
+        AwayDay,
+        Calendar,
+        Event,
+        BlockedUser,
+        MusicGenre,
+      }) {
         User.hasMany(AwayDay);
         User.hasOne(Calendar);
         User.hasMany(Event);
         User.hasMany(BlockedUser);
+        User.belongsToMany(MusicGenre, { through: 'djGenres' });
       },
       hooks: {
         beforeCreate: async function(user) {
