@@ -1,62 +1,51 @@
 import db from '~/models';
 const { User, AwayDay } = db;
-import { encrypt, isSamePassword } from '~/utils/bcrypt';
-import { decode } from '~/utils/jwt';
+import { encryptAsync, isSamePasswordAsync } from '~/utils/bcrypt';
+import { decodeJwt } from '~/utils/jwt';
 import { getCredentials } from '~/utils/base64';
-import { signInInfo } from '~/selectors/user';
+import { signInSelector } from '~/selectors/user';
+const TOKEN_EXPIRATION_DATE = 2.628e9; // 1 month in milliseconds
 
 async function signIn(ctx) {
-  const encodedUserCreds = ctx.header.authorization;
-  if (!encodedUserCreds) {
-    ctx.status = 400;
-    return (ctx.body = { errors: ['Incorrent credentials'] });
+  const b64EncodedUserCreds = ctx.header.authorization;
+
+  if (!b64EncodedUserCreds) {
+    ctx.throw(400, 'Incorrect credentials');
   }
 
-  const { email, password } = getCredentials(encodedUserCreds);
+  const { email, password } = getCredentials(b64EncodedUserCreds);
 
   const user = await User.findOne({
     where: {
-      email: email,
+      email,
     },
     include: [AwayDay],
   });
 
   if (!user) {
-    ctx.status = 400;
-    return (ctx.body = {
-      errors: ['Incorrent credentials'],
-    });
+    ctx.throw(400, 'Incorrect credentials');
   }
 
-  const isEqual = await isSamePassword(password, user.get().password);
+  const isEqual = await isSamePasswordAsync(password, user.get().password);
 
   if (!isEqual) {
-    ctx.status = 400;
-    return (ctx.body = {
-      errors: ['Incorrent credentials'],
-    });
+    ctx.throw(400, 'Incorrect credentials');
   }
 
-  ctx.body = signInInfo(user.get());
+  ctx.body = signInSelector(user.get());
 }
 
 async function signUp(ctx) {
   let { email, password, role } = ctx.request.body;
 
   const user = await User.findOne({
-    where: {
-      email: email,
-    },
+    where: { email: email },
   });
 
   if (user) {
-    ctx.status = 400;
-    return (ctx.body = {
-      errors: ['Username already exists.'],
-    });
+    ctx.throw(400, 'Username already exist');
   }
 
-  password = await encrypt(password);
   await User.create({ email, password, role });
 
   ctx.status = 201;
@@ -64,23 +53,30 @@ async function signUp(ctx) {
 
 async function requireAuth(ctx, next) {
   const token = ctx.headers.authorization;
+
   if (!token) {
-    ctx.status = 400;
-    return (ctx.body = { errors: ['Not Authorized'] });
+    ctx.throw(400, 'Not Authorized');
   }
 
   try {
-    const { sub: userId } = decode(token.split(' ')[1]);
-    const user = await User.findById(userId);
-    if (!user) {
-      ctx.status = 400;
-      return (ctx.body = { errors: ['Not Authorized'] });
+    const { sub: userId, iat } = decodeJwt(token.split(' ')[1]);
+
+    if (new Date().getTime() - iat >= TOKEN_EXPIRATION_DATE) {
+      ctx.throw(400, 'Not Authorized');
     }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      ctx.throw(400, 'Not Authorized');
+    }
+
+    ctx.user = user;
   } catch (err) {
-    ctx.status = 400;
-    return (ctx.body = { errors: ['Not Authorized'] });
+    ctx.throw(400, 'Not Authorized');
   }
-  return await next();
+
+  await next();
 }
 
 export default { signIn, signUp, requireAuth };
