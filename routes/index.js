@@ -16,9 +16,9 @@ router
   .get('/users/:id', UserController.userInfo) // get user info
   .post('/profile-picture', UserController.profilePicture) // upload profile picture
   .post('/users/:id/block', UserController.blockUser)
-  .post('/away', UserController.away.post) // create away dates
+  .post('/away', UserController.postAway) // create away dates
   .put('/profile', UserController.profile) // update profile info
-  .delete('/away', UserController.away.delete); // delete away dates
+  .delete('/away', UserController.deleteAway); // delete away dates
 
 router
   .get('/search', EventController.search) // get all dj's that match a certain criteria specified as query params
