@@ -1,10 +1,12 @@
-'use strict';
-
-module.exports = function(sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
   const User = sequelize.define(
-    'User',
+    'user',
     {
-      email: DataTypes.STRING,
+      email: {
+        type: DataTypes.STRING,
+        unique: true,
+      },
+      password: DataTypes.STRING,
       name: DataTypes.STRING,
       role: DataTypes.INTEGER,
       staff: DataTypes.BOOLEAN,
@@ -19,11 +21,14 @@ module.exports = function(sequelize, DataTypes) {
       swift: DataTypes.STRING,
     },
     {
-      associate: function(models) {
-        models.User.hasMany(models.AwayDay);
+      associate: function({ User, AwayDay, Calendar, Event, BlockedUser }) {
+        User.hasMany(AwayDay);
+        User.hasOne(Calendar);
+        User.hasMany(Event);
+        User.hasMany(BlockedUser);
       },
     }
   );
 
   return User;
-};
+}
