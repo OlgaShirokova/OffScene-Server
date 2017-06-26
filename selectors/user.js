@@ -43,3 +43,60 @@ export function awayDaysSelector(awayDays) {
 export function genresSelector(genres) {
   return genres.map(({ musicGenreName }) => musicGenreName);
 }
+
+export function eventsSelector(events) {
+  return events.map(
+    ({
+      orgId,
+      djId,
+      long,
+      lat,
+      location,
+      price,
+      orgRating,
+      djRating,
+      status,
+      date,
+      id,
+    }) => ({
+      orgId,
+      djId,
+      long,
+      lat,
+      location,
+      price,
+      orgRating,
+      djRating,
+      status,
+      date,
+      id,
+    })
+  );
+}
+
+// userId // WTF
+// orgId
+// djId
+//     createdAt,
+//     updatedAt,
+// long
+// lat
+// location
+// price
+// orgRating
+// djRating
+// status
+// date
+// id
+
+// id
+// date
+// status
+// djRating
+// orgRating
+// price
+// long
+// lat
+// location
+
+// model is breaking events
