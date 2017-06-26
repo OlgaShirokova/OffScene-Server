@@ -1,8 +1,6 @@
-'use strict';
-
-module.exports = function(sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
   const Calendar = sequelize.define(
-    'Calendar',
+    'calendar',
     {
       monday: DataTypes.INTEGER,
       tuesday: DataTypes.INTEGER,
@@ -13,11 +11,12 @@ module.exports = function(sequelize, DataTypes) {
       sunday: DataTypes.INTEGER,
     },
     {
-      associate: function(models) {
-        models.Calendar.belongsTo(models.User);
+      associate: function({ Calendar, User }) {
+        Calendar.belongsTo(User);
       },
+      timestamps: false,
     }
   );
 
   return Calendar;
-};
+}
