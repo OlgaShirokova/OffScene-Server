@@ -1,3 +1,5 @@
+import { encryptAsync } from '~/utils/bcrypt';
+
 export default function(sequelize, DataTypes) {
   const User = sequelize.define(
     'user',
@@ -6,7 +8,9 @@ export default function(sequelize, DataTypes) {
         type: DataTypes.STRING,
         unique: true,
       },
-      password: DataTypes.STRING,
+      password: {
+        type: DataTypes.STRING,
+      },
       name: DataTypes.STRING,
       role: DataTypes.INTEGER,
       staff: DataTypes.BOOLEAN,
@@ -26,6 +30,11 @@ export default function(sequelize, DataTypes) {
         User.hasOne(Calendar);
         User.hasMany(Event);
         User.hasMany(BlockedUser);
+      },
+      hooks: {
+        beforeCreate: async function(user) {
+          user.password = await encryptAsync(user.password);
+        },
       },
     }
   );
