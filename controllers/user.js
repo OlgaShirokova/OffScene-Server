@@ -1,6 +1,7 @@
 import db from '~/models';
 import { userInfoSelector, eventsSelector } from '~/selectors/user';
 const { User, Calendar, AwayDay, Event } = db;
+import { getCoords } from '~/utils/googleApi';
 
 async function events(ctx) {
   const role = ['djId', 'orgId'][ctx.user.get().role];
@@ -44,15 +45,56 @@ async function userInfo(ctx) {
 }
 
 async function profile(ctx) {
-  ctx.body = 'profile';
-}
+  const userId = ctx.user.get().id;
+  let {
+    email,
+    password,
+    role,
+    staff,
+    genres,
+    calendar,
+    awayDays,
+    city,
+    ...userInfo
+  } = ctx.request.body;
 
-async function profilePicture(ctx) {
-  ctx.body = 'profile-picture';
+  const user = await User.findById(userId, {
+    include: [{ model: Calendar }, AwayDay],
+  });
+
+  const calendarId = user.calendar.get().id;
+
+  const [lat, long] = await getCoords('Barcelona');
+
+  userInfo.city = city;
+  userInfo.lat = lat;
+  userInfo.long = long;
+  // TODO  genres and clean
+  awayDays = awayDays.map(date => ({ date, userId }));
+
+  await Promise.all([
+    User.update(userInfo, { where: { id: userId } }),
+    Calendar.update(calendar, { where: { id: calendarId } }),
+    AwayDay.bulkCreate(awayDays),
+  ]);
+
+  ctx.status = 201;
 }
 
 async function blockUser(ctx) {
-  ctx.body = 'block-user';
+  const userId = ctx.user.get().id;
+  const blockedUserId = ctx.params.id;
+
+  const userToBlock = await User.findById(blockedUserId);
+
+  if (userToBlock) {
+    await db.connection.models.blockedUser.create({
+      userId,
+      blockedUserId,
+    });
+  }
+
+  ctx.status = 201;
 }
 
 async function postAway(ctx) {
@@ -85,7 +127,6 @@ export default {
   events,
   userInfo,
   profile,
-  profilePicture,
   blockUser,
   postAway,
   deleteAway,
