@@ -16,24 +16,32 @@ export function signInSelector(user) {
   };
 }
 
-export function userInfoSelector(user) {
-  let {
-    password,
-    bankAccount,
-    swift,
-    email,
-    staff,
-    createdAt,
-    updatedAt,
-    role,
-    ...userInfo
-  } = user;
-
-  userInfo.awayDays = awayDaysSelector(userInfo.awayDays);
-
-  userInfo.genres = genresSelector(userInfo.genres);
-
-  return userInfo;
+export function userInfoSelector({
+  id,
+  name,
+  picture,
+  priceWe,
+  priceWd,
+  city,
+  lat,
+  long,
+  avgRating,
+  calendar,
+  awayDays,
+  musicGenres,
+}) {
+  return {
+    id,
+    name,
+    picture,
+    calendar,
+    priceWe,
+    priceWd,
+    city,
+    avgRating,
+    musicGenres: musicGenres.map(({ name }) => name),
+    awayDays: awayDays.map(({ date }) => date), // TODO: eliminate duplicates ?
+  };
 }
 
 export function awayDaysSelector(awayDays) {

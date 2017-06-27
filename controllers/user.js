@@ -1,6 +1,6 @@
 import db from '~/models';
 import { userInfoSelector, eventsSelector } from '~/selectors/user';
-const { User, Calendar, AwayDay, Event } = db;
+const { User, Calendar, AwayDay, Event, MusicGenre } = db;
 import { getCoords } from '~/utils/googleApi';
 
 async function events(ctx) {
@@ -37,7 +37,7 @@ async function events(ctx) {
 
 async function userInfo(ctx) {
   const { id: djId } = ctx.params;
-  const attributes = [
+  const calendarAttr = [
     'monday',
     'tuesday',
     'wednesday',
@@ -46,22 +46,25 @@ async function userInfo(ctx) {
     'saturday',
     'sunday',
   ];
-  const user = await User.findById(djId, {
-    include: [{ model: Calendar, attributes }, AwayDay],
-  });
 
-  if (!user || user.get().role === 1) {
-    // user does not exist or is an organizer
-    ctx.throw(400, 'Not Authorized');
+  try {
+    const user = await User.findById(djId, {
+      include: [
+        { model: Calendar, attributes: calendarAttr },
+        { model: AwayDay, attributes: ['date'] },
+        { model: MusicGenre, attributes: ['name'] },
+      ],
+    });
+
+    if (!user || user.get().role === 1) {
+      // user does not exist or is an organizer
+      ctx.throw(400, 'Not Authorized');
+    }
+
+    ctx.body = userInfoSelector(user);
+  } catch (err) {
+    ctx.throw(500, 'Service not Available');
   }
-
-  const genres = await db.connection.models.djGenres.findAll({
-    where: { userId: djId },
-  });
-
-  user.dataValues.genres = genres ? genres : []; // TODO: change instead of returning null it atlways returned an empty array when there are no results
-
-  ctx.body = userInfoSelector(user.get());
 }
 
 async function profile(ctx) {
