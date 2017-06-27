@@ -119,8 +119,29 @@ async function blockUser(ctx) {
 
 async function postAway(ctx) {
   const userId = ctx.user.get().id;
-  const awayDays = ctx.request.body.awayDays.map(date => ({ date, userId }));
-  await AwayDay.bulkCreate(awayDays);
+  let { awayDays } = ctx.request.body;
+
+  if (!awayDays || !Array.isArray(awayDays)) {
+    /*
+      We're doing an optimistic validation by only checking that the shape of the data received is correct.
+
+      Basically we're ignoring the following cases:
+        - The dates received are not valid dates, ej: [1,2,3]
+        - The dates received are already stored in the db
+
+      This operation only affects the user that is performing it and due this reason we think that it's better to rely
+      on the client-side. Using a date picker will do the job ☜(˚▽˚)☞
+    */
+    ctx.throw(400, 'Invalid Input');
+  }
+
+  try {
+    await AwayDay.bulkCreate(awayDays.map(date => ({ date, userId })));
+  } catch (err) {
+    //this error its only going to happen when the database is not available
+    ctx.throw(500, 'Service not Available');
+  }
+
   ctx.status = 201;
 }
 
