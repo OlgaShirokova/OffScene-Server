@@ -4,15 +4,35 @@ const { User, Calendar, AwayDay, Event } = db;
 import { getCoords } from '~/utils/googleApi';
 
 async function events(ctx) {
-  const role = ['djId', 'orgId'][ctx.user.get().role];
+  const djId = 'djId';
+  const orgId = 'orgId';
+  const role = [djId, orgId][ctx.user.get().role];
+  const attributes = [
+    'id',
+    'date',
+    'status',
+    'djRating',
+    'orgRating',
+    'price',
+    'location',
+    'lat',
+    'long',
+    'createdAt',
+    'updatedAt',
+    djId,
+    orgId,
+  ];
 
-  const events = await Event.findAll({
-    where: {
-      [role]: ctx.user.get().id,
-    },
-  });
-
-  ctx.body = eventsSelector(events);
+  try {
+    ctx.body = await Event.findAll({
+      where: {
+        [role]: ctx.user.get().id,
+      },
+      attributes,
+    });
+  } catch (err) {
+    ctx.throw(500, 'Service not Available');
+  }
 }
 
 async function userInfo(ctx) {
@@ -109,16 +129,25 @@ async function deleteAway(ctx) {
 
   const awayDays = ctx.request.body.awayDays;
 
-  await Promise.all(
-    awayDays.map(date =>
-      AwayDay.destroy({
-        where: {
-          userId,
-          date,
-        },
-      })
-    )
-  );
+  await AwayDay.destroy({
+    where: {
+      $and: {
+        userId,
+        $or: awayDays.map(date => ({ date })),
+      },
+    },
+  });
+
+  // await Promise.all(
+  //   awayDays.map(date =>
+  //     AwayDay.destroy({
+  //       where: {
+  //         userId,
+  //         date,
+  //       },
+  //     })
+  //   )
+  // )
 
   ctx.body = 201;
 }
