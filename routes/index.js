@@ -11,14 +11,18 @@ const router = new Router();
 router
   .get('/sign-in', AuthController.signIn)
   .post('/sign-up', AuthController.signUp);
+
 router
-  .get('/events', UserController.events) // get events that I'm or I had been involved (logged user)
-  .get('/users/:id', UserController.userInfo) // get user info
-  .post('/profile-picture', UserController.profilePicture) // upload profile picture
-  .post('/users/:id/block', UserController.blockUser)
-  .post('/away', UserController.postAway) // create away dates
-  .put('/profile', UserController.profile) // update profile info
-  .delete('/away', UserController.deleteAway); // delete away dates
+  .get('/events', AuthController.requireAuth, UserController.events) // get events that I'm or I had been involved (logged user)
+  .get('/users/:id', AuthController.requireAuth, UserController.userInfo) // get user info
+  .post(
+    '/users/:id/block',
+    AuthController.requireAuth,
+    UserController.blockUser
+  )
+  .post('/away', AuthController.requireAuth, UserController.postAway) // create away dates
+  .put('/profile', AuthController.requireAuth, UserController.profile) // update profile info
+  .delete('/away', AuthController.requireAuth, UserController.deleteAway); // delete away dates
 
 router
   .get('/search', EventController.search) // get all dj's that match a certain criteria specified as query params
