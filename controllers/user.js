@@ -147,28 +147,24 @@ async function postAway(ctx) {
 
 async function deleteAway(ctx) {
   const userId = ctx.user.get().id;
-
   const awayDays = ctx.request.body.awayDays;
 
-  await AwayDay.destroy({
-    where: {
-      $and: {
-        userId,
-        $or: awayDays.map(date => ({ date })),
-      },
-    },
-  });
+  if (!awayDays || !Array.isArray(awayDays)) {
+    ctx.throw(400, 'Invalid Input');
+  }
 
-  // await Promise.all(
-  //   awayDays.map(date =>
-  //     AwayDay.destroy({
-  //       where: {
-  //         userId,
-  //         date,
-  //       },
-  //     })
-  //   )
-  // )
+  try {
+    await AwayDay.destroy({
+      where: {
+        $and: {
+          userId,
+          $or: awayDays.map(date => ({ date })),
+        },
+      },
+    });
+  } catch (err) {
+    ctx.throw(500, 'Service not Available');
+  }
 
   ctx.body = 201;
 }
