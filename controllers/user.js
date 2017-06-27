@@ -56,11 +56,29 @@ async function blockUser(ctx) {
 }
 
 async function postAway(ctx) {
-  ctx.body = 'away-post';
+  const userId = ctx.user.get().id;
+  const awayDays = ctx.request.body.awayDays.map(date => ({ date, userId }));
+  await AwayDay.bulkCreate(awayDays);
+  ctx.status = 201;
 }
 
 async function deleteAway(ctx) {
-  ctx.body = 'away-delete';
+  const userId = ctx.user.get().id;
+
+  const awayDays = ctx.request.body.awayDays;
+
+  await Promise.all(
+    awayDays.map(date =>
+      AwayDay.destroy({
+        where: {
+          userId,
+          date,
+        },
+      })
+    )
+  );
+
+  ctx.body = 201;
 }
 
 export default {
