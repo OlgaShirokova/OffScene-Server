@@ -40,7 +40,7 @@ export function userInfoSelector({
     city,
     avgRating,
     musicGenres: musicGenres.map(({ name }) => name),
-    awayDays: awayDays.map(({ date }) => date), // TODO: eliminate duplicates ?
+    awayDays: awayDays.map(({ date }) => date),
   };
 }
 

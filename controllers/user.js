@@ -157,7 +157,6 @@ async function postAway(ctx) {
 
       Basically we're ignoring the following cases:
         - The dates received are not valid dates, ej: [1,2,3]
-        - The dates received are already stored in the db
 
       This operation only affects the user that is performing it and due this reason we think that it's better to rely
       on the client-side. Using a date picker will do the job ☜(˚▽˚)☞
@@ -166,8 +165,17 @@ async function postAway(ctx) {
   }
 
   try {
-    await AwayDay.bulkCreate(awayDays.map(date => ({ date, userId })));
+    await AwayDay.bulkCreate(
+      awayDays.map(date => ({
+        id: Number(String(new Date(date).getTime()) + String(userId)),
+        date,
+        userId,
+      }))
+    );
   } catch (err) {
+    if (err.message === 'Validation error') {
+      ctx.throw(400, 'Invalid Input');
+    }
     //this error its only going to happen when the database is not available
     ctx.throw(500, 'Service not Available');
   }
