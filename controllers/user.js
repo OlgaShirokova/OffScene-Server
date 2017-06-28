@@ -68,40 +68,61 @@ async function userInfo(ctx) {
 }
 
 async function profile(ctx) {
-  const userId = ctx.user.get().id;
+  const userId = ctx.user.id;
   let {
-    email,
-    password,
-    role,
-    staff,
-    genres,
     calendar,
-    awayDays,
-    city,
+    awayDays = [],
+    musicGenres = [],
     ...userInfo
   } = ctx.request.body;
 
-  const user = await User.findById(userId, {
-    include: [{ model: Calendar }, AwayDay],
-  });
+  const coords = await getCoords(userInfo.city);
 
-  const calendarId = user.calendar.get().id;
+  if (!coords) {
+    ctx.throw(400, 'Invalid Input');
+  }
 
-  const [lat, long] = await getCoords('Barcelona');
+  try {
+    const user = await User.findById(userId, {
+      include: [{ model: Calendar }, AwayDay],
+    });
+    const storedCalendar = user.calendar;
 
-  userInfo.city = city;
-  userInfo.lat = lat;
-  userInfo.long = long;
-  // TODO  genres and clean
-  awayDays = awayDays.map(date => ({ date, userId }));
+    userInfo.lat = coords.lat;
+    userInfo.long = coords.long;
 
-  await Promise.all([
-    User.update(userInfo, { where: { id: userId } }),
-    Calendar.update(calendar, { where: { id: calendarId } }),
-    AwayDay.bulkCreate(awayDays),
-  ]);
+    awayDays = awayDays.map(date => ({ date, userId }));
+    musicGenres = musicGenres.map(musicGenreName => ({
+      musicGenreName,
+      userId,
+    }));
 
-  ctx.status = 201;
+    await Promise.all([
+      User.update(userInfo, {
+        attributes: [
+          'name',
+          'picture',
+          'priceWe',
+          'priceWd',
+          'city',
+          'bankAccount',
+          'swift',
+          'lat',
+          'long',
+        ],
+        where: { id: userId },
+      }),
+      storedCalendar
+        ? Calendar.update(calendar, { where: { id: storedCalendar.id } })
+        : Calendar.create({ ...calendar, userId }),
+      AwayDay.bulkCreate(awayDays),
+      db.connection.models.djGenres.bulkCreate(musicGenres),
+    ]);
+  } catch (err) {
+    ctx.throw(400, 'Invalid Input'); // in 99 % of the cases it's going to be the cause of the error, the other 1 % is db reachability issues
+  }
+
+  ctx.body = 201;
 }
 
 async function blockUser(ctx) {
