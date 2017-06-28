@@ -28,7 +28,7 @@ export default function(sequelize, DataTypes) {
       associate: function({ User, AwayDay, Calendar, Event, MusicGenre }) {
         User.hasMany(AwayDay);
         User.hasOne(Calendar);
-        User.hasMany(Event);
+        // User.hasMany(Event);
         User.belongsToMany(User, {
           through: 'blockedUser',
           as: 'blockedUsers',

@@ -34,7 +34,7 @@ Object.keys(db).forEach(function(modelName) {
 connection
   .sync({
     loggin: console.log,
-    // force: true,
+    force: true,
   })
   .then(async function() {
     // await db.Event.bulkCreate([
@@ -58,7 +58,7 @@ connection
     //   userId: 2,
     // })
     // await db.MusicGenre.create({
-    //   name: 'rap',
+    //   name: 'pop',
     // })
     // await db.AwayDay.create({
     //   date: '2017-06-30T00:00:00+00:00',
@@ -67,12 +67,22 @@ connection
     // console.log('mmmmmm', connection.models.djGenres)
     // connection.models.djGenres.create({
     //   userId: 1,
-    //   musicGenreName: 'rap',
+    //   musicGenreName: 'pop',
     // })
     // connection.models.djGenres.create({
     //   userId: 1,
     //   musicGenreName: 'dance',
     // })
+    // connection.models.djGenres.bulkCreate([
+    //   {
+    //     userId: 1,
+    //     musicGenreName: 'rap',
+    //   },
+    //   {
+    //     userId: 1,
+    //     musicGenreName: 'pop',
+    //   },
+    // ])
     // db.MusicGenre.create({
     //   name: 'rap',
     // })
