@@ -108,13 +108,19 @@ async function blockUser(ctx) {
   const userId = ctx.user.get().id;
   const blockedUserId = ctx.params.id;
 
-  const userToBlock = await User.findById(blockedUserId);
-
-  if (userToBlock) {
-    await db.connection.models.blockedUser.create({
-      userId,
-      blockedUserId,
-    });
+  try {
+    const userToBlock = await User.findById(blockedUserId);
+    if (userId !== blockedUserId && userToBlock && userToBlock.role === 1) {
+      // exists and it's an organizer
+      await db.connection.models.blockedUser.create({
+        userId,
+        blockedUserId,
+      });
+    }
+  } catch (err) {
+    if (err.message !== 'Validation error') {
+      ctx.throw(500, 'Service not Available');
+    }
   }
 
   ctx.status = 201;
