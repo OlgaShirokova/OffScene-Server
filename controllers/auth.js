@@ -1,5 +1,5 @@
 import db from '~/models';
-const { User, AwayDay } = db;
+const { User, AwayDay, Calendar, MusicGenre } = db;
 import { encryptAsync, isSamePasswordAsync } from '~/utils/bcrypt';
 import { decodeJwt } from '~/utils/jwt';
 import { getCredentials } from '~/utils/base64';
@@ -15,24 +15,37 @@ async function signIn(ctx) {
 
   const { email, password } = getCredentials(b64EncodedUserCreds);
 
+  const calendarAttr = [
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+    'sunday',
+  ];
+
   const user = await User.findOne({
     where: {
       email,
     },
-    include: [AwayDay],
+    include: [
+      { model: Calendar, attributes: calendarAttr },
+      { model: AwayDay, attributes: ['date'] },
+      { model: MusicGenre, attributes: ['name'] },
+    ],
   });
 
   if (!user) {
     ctx.throw(400, 'Incorrect credentials');
   }
 
-  const isEqual = await isSamePasswordAsync(password, user.get().password);
+  const isEqual = await isSamePasswordAsync(password, user.password);
 
   if (!isEqual) {
     ctx.throw(400, 'Incorrect credentials');
   }
-
-  ctx.body = signInSelector(user.get());
+  ctx.body = signInSelector(user);
 }
 
 async function signUp(ctx) {

@@ -31,64 +31,9 @@ Object.keys(db).forEach(function(modelName) {
   }
 });
 
-connection
-  .sync({
-    loggin: console.log,
-    force: true,
-  })
-  .then(async function() {
-    // await db.Event.bulkCreate([
-    //   { status: 1, djId: 1, orgId: 3 },
-    //   { status: 1, djId: 1, orgId: 3 },
-    //   { status: 2, djId: 1, orgId: 3 },
-    // ])
-    // await db.User.create({
-    //   email: 'organizer@gmail.com',
-    //   password: 'lalalala',
-    //   role: 1,
-    // })
-    // await db.Calendar.create({
-    //   monday: 1,
-    //   tuesday: 1,
-    //   wednesday: 1,
-    //   thursday: 1,
-    //   friday: 1,
-    //   saturday: 1,
-    //   sunday: 1,
-    //   userId: 2,
-    // })
-    // await db.MusicGenre.create({
-    //   name: 'pop',
-    // })
-    // await db.AwayDay.create({
-    //   date: '2017-06-30T00:00:00+00:00',
-    //   userId: 1,
-    // })
-    // console.log('mmmmmm', connection.models.djGenres)
-    // connection.models.djGenres.create({
-    //   userId: 1,
-    //   musicGenreName: 'pop',
-    // })
-    // connection.models.djGenres.create({
-    //   userId: 1,
-    //   musicGenreName: 'dance',
-    // })
-    // connection.models.djGenres.bulkCreate([
-    //   {
-    //     userId: 1,
-    //     musicGenreName: 'rap',
-    //   },
-    //   {
-    //     userId: 1,
-    //     musicGenreName: 'pop',
-    //   },
-    // ])
-    // db.MusicGenre.create({
-    //   name: 'rap',
-    // })
-    // db.MusicGenre.create({
-    //   name: 'dance',
-    // })
-  });
+connection.sync({
+  loggin: console.log,
+  force: true,
+});
 
 export default db;
