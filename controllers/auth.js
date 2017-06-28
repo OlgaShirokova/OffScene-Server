@@ -65,7 +65,9 @@ async function requireAuth(ctx, next) {
       ctx.throw(400, 'Not Authorized');
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId, {
+      attributes: ['id', 'role', 'staff'],
+    });
 
     if (!user) {
       ctx.throw(400, 'Not Authorized');
