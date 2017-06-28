@@ -1,5 +1,5 @@
 import db from '~/models';
-import { userInfoSelector, eventsSelector } from '~/selectors/user';
+import { userInfoSelector } from '~/selectors/user';
 const { User, Calendar, AwayDay, Event, MusicGenre } = db;
 import { getCoords } from '~/utils/googleApi';
 
