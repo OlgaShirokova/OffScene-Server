@@ -5,7 +5,7 @@ import routes from '~/routes';
 import { errorHandling } from '~/middlewares';
 
 new Koa()
-  .use(koaBody())
+  .use(koaBody({ strict: false }))
   .use(logger())
   .use(errorHandling)
   .use(routes)

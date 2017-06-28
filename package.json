@@ -11,6 +11,7 @@
     "babel-core": "6.25.0",
     "babel-loader": "7.1.0",
     "babel-plugin-root-import": "5.1.0",
+    "babel-plugin-transform-object-rest-spread": "6.23.0",
     "babel-preset-latest": "6.24.1",
     "eslint": "4.0.0",
     "eslint-config-prettier": "2.2.0",
@@ -22,6 +23,10 @@
     "prettier": "1.4.4"
   },
   "dependencies": {
+    "axios": "0.16.2",
+    "base-64": "0.1.0",
+    "bcrypt": "1.0.2",
+    "jwt-simple": "0.5.1",
     "koa": "2.3.0",
     "koa-body": "2.1.0",
     "koa-router": "7.2.1"
