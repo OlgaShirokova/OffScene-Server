@@ -9,8 +9,9 @@ export function getCoords(city) {
         key: config.development.API_GOOGLE,
       },
     })
-    .then(({ data }) => [
-      data.results[0].geometry.location.lat,
-      data.results[0].geometry.location.lng,
-    ]);
+    .then(({ data }) => ({
+      lat: data.results[0].geometry.location.lat,
+      long: data.results[0].geometry.location.lng,
+    }))
+    .catch(() => null);
 }
