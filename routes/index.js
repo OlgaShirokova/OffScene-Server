@@ -21,7 +21,7 @@ router
     UserController.blockUser
   )
   .post('/away', AuthController.requireAuth, UserController.postAway) // create away dates
-  .put('/profile', AuthController.requireAuth, UserController.profile) // update profile info
+  .put('/profile', AuthController.requireAuth, UserController.updateProfile) // update profile info
   .delete('/away', AuthController.requireAuth, UserController.deleteAway); // delete away dates
 
 router

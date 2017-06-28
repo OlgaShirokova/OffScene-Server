@@ -56,7 +56,7 @@ async function signUp(ctx) {
   });
 
   if (user) {
-    ctx.throw(400, 'Username already exist');
+    ctx.throw(400, 'A user is already registered with this email.');
   }
 
   await User.create({ email, password, role });

@@ -67,7 +67,7 @@ async function userInfo(ctx) {
   }
 }
 
-async function profile(ctx) {
+async function updateProfile(ctx) {
   const userId = ctx.user.id;
   let {
     calendar,
@@ -122,7 +122,7 @@ async function profile(ctx) {
     ctx.throw(400, 'Invalid Input'); // in 99 % of the cases it's going to be the cause of the error, the other 1 % is db reachability issues
   }
 
-  ctx.body = 201;
+  ctx.status = 201;
 }
 
 async function blockUser(ctx) {
@@ -204,13 +204,13 @@ async function deleteAway(ctx) {
     ctx.throw(500, 'Service not Available');
   }
 
-  ctx.body = 201;
+  ctx.status = 201;
 }
 
 export default {
   events,
   userInfo,
-  profile,
+  updateProfile,
   blockUser,
   postAway,
   deleteAway,
