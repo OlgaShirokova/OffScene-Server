@@ -150,34 +150,6 @@ async function updatePicture(ctx) {
   }
 }
 
-//     await Promise.all([
-//       User.update(userInfo, {
-//         attributes: [
-//           'name',
-//           'picture',
-//           'priceWe',
-//           'priceWd',
-//           'city',
-//           'bankAccount',
-//           'swift',
-//           'lat',
-//           'long',
-//         ],
-//         where: { id: userId },
-//       }),
-//       storedCalendar
-//         ? Calendar.update(calendar, { where: { id: storedCalendar.id } })
-//         : Calendar.create({ ...calendar, userId }),
-//       AwayDay.bulkCreate(awayDays),
-//       db.connection.models.djGenres.bulkCreate(musicGenres),
-//     ]);
-//   } catch (err) {
-//     ctx.throw(400, 'Invalid Input'); // in 99 % of the cases it's going to be the cause of the error, the other 1 % is db reachability issues
-//   }
-//
-//   ctx.status = 201;
-// }
-
 async function blockUser(ctx) {
   const userId = ctx.user.get().id;
   const blockedUserId = ctx.params.id;
