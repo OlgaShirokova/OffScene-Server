@@ -22,7 +22,8 @@ router
   )
   .post('/away', AuthController.requireAuth, UserController.postAway) // create away dates
   .put('/profile', AuthController.requireAuth, UserController.updateProfile) // update profile info
-  .delete('/away', AuthController.requireAuth, UserController.deleteAway); // delete away dates
+  .delete('/away', AuthController.requireAuth, UserController.deleteAway) // delete away dates
+  .post('/picture', AuthController.requireAuth, UserController.updatePicture); // update profile picture
 
 router
   .get('/search', EventController.search) // get all dj's that match a certain criteria specified as query params
