@@ -2,6 +2,7 @@ import db from '~/models';
 import { userInfoSelector } from '~/selectors/user';
 const { User, Calendar, AwayDay, Event, MusicGenre } = db;
 import { getCoords } from '~/utils/googleApi';
+import { uploadPicture } from '~/utils/awsSdk';
 
 async function events(ctx) {
   const djId = 'djId';
@@ -125,6 +126,30 @@ async function updateProfile(ctx) {
   ctx.status = 201;
 }
 
+async function updatePicture(ctx) {
+  const userId = ctx.user.id;
+  const formData = ctx.request.body;
+  const filePath = formData.files.picture.path;
+  try {
+    const picture = await uploadPicture(filePath, `avatar_${userId}.png`);
+
+    await User.update(
+      { picture: picture.Location },
+      {
+        where: { id: userId },
+      }
+    );
+
+    const user = await User.findById(userId);
+
+    ctx.status = 200;
+    ctx.body = userInfoSelector(user);
+  } catch (e) {
+    console.log('Error while uploading file: ', e);
+    ctx.throw(400, 'Invalid Input');
+  }
+}
+
 async function blockUser(ctx) {
   const userId = ctx.user.get().id;
   const blockedUserId = ctx.params.id;
@@ -211,6 +236,7 @@ export default {
   events,
   userInfo,
   updateProfile,
+  updatePicture,
   blockUser,
   postAway,
   deleteAway,

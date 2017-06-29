@@ -3,7 +3,8 @@
     "prettier"
   ],
   "plugins": [
-    "prettier"
+    "prettier",
+    "import"
   ],
   "globals": {
     "document": false
@@ -33,5 +34,6 @@
         "trailingComma": "es5"
       }
     ]
+    "import/no-unresolved": 0
   }
 }
