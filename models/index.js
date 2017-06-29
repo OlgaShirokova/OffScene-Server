@@ -1,8 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import Sequelize from 'sequelize';
-import config from '~/config';
-const { dbName, user, password, host, dialect, storage } = config.development;
+const nconf = require('~/config/nconf');
+const dbName = nconf.get('DB_NAME');
+const user = nconf.get('DB_USERNAME');
+const password = nconf.get('DB_PASSWORD');
+const host = nconf.get('DB_HOST');
+const dialect = nconf.get('DB_DIALECT');
+const storage = nconf.get('DB_STORAGE');
 
 const connection = new Sequelize(dbName, user, password, {
   host,

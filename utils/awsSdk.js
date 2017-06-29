@@ -14,9 +14,7 @@ export function uploadPicture(picture, fileName) {
       Bucket: 'offstage',
     };
 
-    // const file = './meme.png';
     const file = picture;
-    // const file = ctx.request.body.files.file;
     const fileStream = fs.createReadStream(file);
     fileStream.on('error', function(err) {
       reject(err);
