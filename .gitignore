@@ -3,5 +3,6 @@ node_modules/
 npm-debug.log
 yarn-error.log
 .vscode/
-./config/index.js
+config/index.js
+config/env.json
 db.sqlite
