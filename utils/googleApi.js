@@ -6,7 +6,9 @@ export function getCoords(city) {
     .get('https://maps.googleapis.com/maps/api/geocode/json?', {
       params: {
         address: city,
-        key: config.development.API_GOOGLE,
+        key: process.env.NODE_ENV === 'testing'
+          ? config.testing.API_GOOGLE
+          : config.development.API_GOOGLE,
       },
     })
     .then(({ data }) => ({

@@ -65,7 +65,7 @@ async function signUp(ctx) {
 }
 
 async function requireAuth(ctx, next) {
-  const token = ctx.headers.authorization;
+  const token = ctx.header.authorization;
 
   if (!token) {
     ctx.throw(400, 'Not Authorized');

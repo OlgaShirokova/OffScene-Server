@@ -1,16 +1,15 @@
+import { expect } from 'chai';
 import fs from 'fs';
 import path from 'path';
 import Sequelize from 'sequelize';
 import config from '~/config';
-const { dbName, user, password, host, dialect, storage } = process.env
-  .NODE_ENV === 'testing'
-  ? config.testing
-  : config.development;
+const { dbName, user, password, host, dialect, storage } = config.testing;
+const MODELS_PATH = `${__dirname}/../models`;
+
 const connection = new Sequelize(dbName, user, password, {
   host,
   dialect,
   storage,
-  logging: false,
 });
 
 const db = {
@@ -19,12 +18,12 @@ const db = {
 };
 
 fs
-  .readdirSync(__dirname)
+  .readdirSync(MODELS_PATH)
   .filter(function(file) {
     return file.indexOf('.') !== 0 && file !== 'index.js';
   })
   .forEach(function(file) {
-    const model = connection.import(path.join(__dirname, file));
+    const model = connection.import(path.join(MODELS_PATH, file));
     db[`${model.name[0].toUpperCase()}${model.name.substr(1)}`] = model;
   });
 
@@ -34,9 +33,13 @@ Object.keys(db).forEach(function(modelName) {
   }
 });
 
-connection.sync({
-  loggin: false,
-  force: true,
+before(done => {
+  connection
+    .sync({
+      loggin: console.log,
+      // force: true,
+    })
+    .then(() => done());
 });
 
 export default db;
