@@ -6,3 +6,4 @@ yarn-error.log
 config/index.js
 config/env.json
 db.sqlite
+package-lock.json
