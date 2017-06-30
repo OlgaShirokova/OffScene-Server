@@ -131,6 +131,7 @@ describe('updateProfile', function() {
   it('should update the profile of the authenticated user with the new information provided', async () => {
     ctx.request.body = userUpdateInfo;
     await UserController.updateProfile(ctx);
+
     const calendarAttr = [
       'monday',
       'tuesday',
@@ -150,7 +151,6 @@ describe('updateProfile', function() {
     });
 
     ctx.body = userInfoSelector(user);
-
     expect(ctx.status).to.equal(201);
     expect(ctx.body.name).to.equal(ctx.request.body.name);
     expect(ctx.body.picture).to.equal(ctx.request.body.picture);

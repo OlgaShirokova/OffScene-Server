@@ -78,7 +78,7 @@ async function updateProfile(ctx) {
   } = ctx.request.body;
 
   const coords = await getCoords(userInfo.city);
-
+  console.log('zzzzzadadadadadz', coords);
   if (!coords) {
     ctx.throw(400, 'Invalid Input');
   }

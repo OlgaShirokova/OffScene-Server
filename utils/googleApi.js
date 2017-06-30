@@ -6,7 +6,7 @@ export function getCoords(city) {
     .get('https://maps.googleapis.com/maps/api/geocode/json?', {
       params: {
         address: city,
-        key: nconf.get('GOOGLE_API_KEY'),
+        key: nconf.get('GOOGLE_API_KEY'), // [WARNING] if the api key is outdated this function will fail silenty
       },
     })
     .then(({ data }) => ({
