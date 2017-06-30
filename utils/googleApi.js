@@ -1,14 +1,12 @@
 import axios from 'axios';
-import config from '~/config';
+const nconf = require('~/config/nconf');
 
 export function getCoords(city) {
   return axios
     .get('https://maps.googleapis.com/maps/api/geocode/json?', {
       params: {
         address: city,
-        key: process.env.NODE_ENV === 'testing'
-          ? config.testing.API_GOOGLE
-          : config.development.API_GOOGLE,
+        key: nconf.get('GOOGLE_API_KEY'),
       },
     })
     .then(({ data }) => ({

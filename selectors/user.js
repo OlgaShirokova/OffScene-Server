@@ -25,6 +25,10 @@ export function userInfoSelector({
   awayDays,
   musicGenres,
 }) {
+  awayDays = awayDays ? awayDays.map(({ date }) => date) : undefined;
+
+  musicGenres = musicGenres ? musicGenres.map(({ name }) => name) : undefined;
+
   return {
     id,
     name,
@@ -36,7 +40,7 @@ export function userInfoSelector({
     long,
     avgRating,
     calendar,
-    awayDays: awayDays.map(({ date }) => date),
-    musicGenres: musicGenres.map(({ name }) => name),
+    awayDays,
+    musicGenres,
   };
 }

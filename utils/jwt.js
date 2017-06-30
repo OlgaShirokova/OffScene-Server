@@ -1,8 +1,6 @@
 import jwt from 'jwt-simple';
-import config from '~/config';
-const { SECRET } = process.env.NODE_ENV === 'testing'
-  ? config.testing
-  : config.development;
+const nconf = require('~/config/nconf');
+const SECRET = nconf.get('SECRET');
 
 export function encodeJwt(userId) {
   return jwt.encode({ sub: userId, iat: new Date().getTime() }, SECRET);
