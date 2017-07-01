@@ -159,7 +159,6 @@ describe('updateProfile', function() {
     expect(ctx.body.city).to.equal(ctx.request.body.city);
     expect(ctx.body.lat).to.not.equal(null);
     expect(ctx.body.long).to.not.equal(null);
-    expect(ctx.status).to.equal(201);
     expect(ctx.body.calendar.get()).to.eql(ctx.request.body.calendar);
     expect(ctx.body.musicGenres).to.include(ctx.request.body.musicGenres[0]);
   });
