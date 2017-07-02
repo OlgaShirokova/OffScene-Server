@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import Sequelize from 'sequelize';
-const nconf = require('~/config/nconf');
+import nconf from '~/config/nconf';
 const dbName = nconf.get('DB_NAME');
 const user = nconf.get('DB_USERNAME');
 const password = nconf.get('DB_PASSWORD');
@@ -38,7 +38,7 @@ Object.keys(db).forEach(function(modelName) {
 });
 
 connection.sync({
-  loggin: false,
+  loggin: true,
   // force: true,
 });
 

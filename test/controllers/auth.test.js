@@ -3,7 +3,8 @@ import jwt from 'jwt-simple';
 import { AuthController } from '~/controllers';
 import db from '~/test';
 import { encodeJwt, decodeJwt } from '~/utils/jwt';
-import config from '~/config';
+import nconf from '~/config/nconf';
+
 const { User } = db;
 
 describe('signUp', function() {
@@ -118,7 +119,7 @@ describe('requireAuth', function() {
 
     const token = `Bearer ${jwt.encode(
       { sub: user.id, iat: new Date(1).getTime() },
-      config.testing.SECRET
+      nconf.get('SECRET')
     )}`;
     ctx.header.authorization = token;
     await AuthController.requireAuth(ctx, () => 1);

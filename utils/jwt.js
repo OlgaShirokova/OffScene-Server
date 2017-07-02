@@ -1,5 +1,5 @@
 import jwt from 'jwt-simple';
-const nconf = require('~/config/nconf');
+import nconf from '~/config/nconf';
 const SECRET = nconf.get('SECRET');
 
 export function encodeJwt(userId) {

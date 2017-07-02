@@ -1,6 +1,6 @@
-const fs = require('fs');
-const nconf = require('~/config/nconf');
-const AWS = require('aws-sdk');
+import fs from 'fs';
+import nconfg from '~/config/nconf';
+import AWS from 'aws-sdk';
 
 export function uploadPicture(picture, fileName) {
   return new Promise((resolve, reject) => {

@@ -1,9 +1,9 @@
-const nconf = require('nconf');
+import nconf from 'nconf';
 
-let file = 'config/env.json';
+nconf.argv().env().file({
+  file: process.env.NODE_ENV === 'testing'
+    ? 'config/test.json'
+    : 'config/env.json',
+});
 
-if (process.env.NODE_ENV === 'testing') file = 'config/test.json';
-
-nconf.argv().env().file({ file });
-
-module.exports = nconf;
+export default nconf;

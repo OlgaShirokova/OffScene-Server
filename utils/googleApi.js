@@ -1,5 +1,5 @@
 import axios from 'axios';
-const nconf = require('~/config/nconf');
+import nconf from '~/config/nconf';
 
 export function getCoords(city) {
   return axios
