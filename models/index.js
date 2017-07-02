@@ -37,9 +37,216 @@ Object.keys(db).forEach(function(modelName) {
   }
 });
 
-connection.sync({
-  loggin: true,
-  // force: true,
-});
+connection
+  .sync({
+    loggin: false,
+    force: true,
+  })
+  .then(function() {
+    createMusicGenres();
+  });
+
+async function createMusicGenres() {
+  const musicGenre = await db.MusicGenre.bulkCreate([
+    {
+      name: 'acid',
+    },
+    {
+      name: 'alternative',
+    },
+    {
+      name: 'band',
+    },
+    {
+      name: 'bass',
+    },
+    {
+      name: 'breaks',
+    },
+    {
+      name: 'breakbeat',
+    },
+    {
+      name: 'chill out',
+    },
+    {
+      name: 'commercial dance',
+    },
+    {
+      name: 'contemporary',
+    },
+    {
+      name: 'cosmic',
+    },
+    {
+      name: 'crunk',
+    },
+    {
+      name: 'dance',
+    },
+    {
+      name: 'dancehall',
+    },
+    {
+      name: 'dance-pop',
+    },
+    {
+      name: 'dance-punk',
+    },
+    {
+      name: 'disco',
+    },
+    {
+      name: 'downtempo',
+    },
+    {
+      name: 'drum',
+    },
+    {
+      name: 'drum & bass',
+    },
+    {
+      name: 'dub',
+    },
+    {
+      name: 'dubstep',
+    },
+    {
+      name: 'ebm',
+    },
+    {
+      name: 'electro house',
+    },
+    {
+      name: 'electroclash',
+    },
+    {
+      name: 'electro-industrial',
+    },
+    {
+      name: 'electronica',
+    },
+    {
+      name: 'eurobeat',
+    },
+    {
+      name: 'freestyle',
+    },
+    {
+      name: 'funk',
+    },
+    {
+      name: 'garage',
+    },
+    {
+      name: 'grime',
+    },
+    {
+      name: 'happy',
+    },
+    {
+      name: 'hard dance',
+    },
+    {
+      name: 'hardcore',
+    },
+    {
+      name: 'hard techno',
+    },
+    {
+      name: 'hardstyle',
+    },
+    {
+      name: 'hi-nrg',
+    },
+    {
+      name: 'hip',
+    },
+    {
+      name: 'hip-hop',
+    },
+    {
+      name: 'house',
+    },
+    {
+      name: 'indie dance',
+    },
+    {
+      name: 'italo',
+    },
+    {
+      name: 'jazz',
+    },
+    {
+      name: 'juke',
+    },
+    {
+      name: 'madchester',
+    },
+    {
+      name: 'minimal',
+    },
+    {
+      name: 'moombahton',
+    },
+    {
+      name: 'motown',
+    },
+    {
+      name: 'nu disco',
+    },
+    {
+      name: 'open format',
+    },
+    {
+      name: 'progressive house',
+    },
+    {
+      name: 'psy-trance',
+    },
+    {
+      name: 'r&b',
+    },
+    {
+      name: 'rave',
+    },
+    {
+      name: 'reggae',
+    },
+    {
+      name: 'rock',
+    },
+    {
+      name: 'roll',
+    },
+    {
+      name: 'swing',
+    },
+    {
+      name: 'synthpop',
+    },
+    {
+      name: 'tech House',
+    },
+    {
+      name: 'techno',
+    },
+    {
+      name: 'technopop',
+    },
+    {
+      name: 'trance',
+    },
+    {
+      name: 'trap',
+    },
+    {
+      name: 'underground',
+    },
+    {
+      name: 'wave',
+    },
+  ]);
+}
 
 export default db;
