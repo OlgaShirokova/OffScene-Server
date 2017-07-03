@@ -1,35 +1,18 @@
-import db from '~/models';
+import db, { eventsAttr, getRole, userInfoIncludes } from '~/models';
 import { userInfoSelector } from '~/selectors/user';
 const { User, Calendar, AwayDay, Event, MusicGenre } = db;
 import { getCoords } from '~/utils/googleApi';
 import { uploadPicture } from '~/utils/awsSdk';
 
 async function events(ctx) {
-  const djId = 'djId';
-  const orgId = 'orgId';
-  const role = [djId, orgId][ctx.user.get().role];
-  const attributes = [
-    'id',
-    'date',
-    'status',
-    'djRating',
-    'orgRating',
-    'price',
-    'location',
-    'lat',
-    'long',
-    'createdAt',
-    'updatedAt',
-    djId,
-    orgId,
-  ];
+  const role = getRole(ctx);
 
   try {
     ctx.body = await Event.findAll({
       where: {
-        [role]: ctx.user.get().id,
+        [role]: ctx.user.id,
       },
-      attributes,
+      attributes: eventsAttr,
     });
   } catch (err) {
     ctx.throw(500, 'Service not Available');
@@ -38,31 +21,16 @@ async function events(ctx) {
 
 async function userInfo(ctx) {
   const { id: djId } = ctx.params;
-  const calendarAttr = [
-    'monday',
-    'tuesday',
-    'wednesday',
-    'thursday',
-    'friday',
-    'saturday',
-    'sunday',
-  ];
 
   try {
-    const user = await User.findById(djId, {
-      include: [
-        { model: Calendar, attributes: calendarAttr },
-        { model: AwayDay, attributes: ['date'] },
-        { model: MusicGenre, attributes: ['name'] },
-      ],
-    });
+    const user = await User.getInfoById(djId, userInfoSelector);
 
-    if (!user || user.get().role === 1) {
+    if (!user || user.role === 1) {
       // user does not exist or is an organizer
       ctx.throw(400, 'Not Authorized');
     }
 
-    ctx.body = userInfoSelector(user);
+    ctx.body = user;
   } catch (err) {
     ctx.throw(500, 'Service not Available');
   }
@@ -78,7 +46,7 @@ async function updateProfile(ctx) {
   } = ctx.request.body;
 
   const coords = await getCoords(userInfo.city);
-  console.log('zzzzzadadadadadz', coords);
+
   if (!coords) {
     ctx.throw(400, 'Invalid Input');
   }
@@ -99,20 +67,7 @@ async function updateProfile(ctx) {
     }));
 
     await Promise.all([
-      User.update(userInfo, {
-        attributes: [
-          'name',
-          'picture',
-          'priceWe',
-          'priceWd',
-          'city',
-          'bankAccount',
-          'swift',
-          'lat',
-          'long',
-        ],
-        where: { id: userId },
-      }),
+      User.updateInfoById(userId, userInfo),
       storedCalendar
         ? Calendar.update(calendar, { where: { id: storedCalendar.id } })
         : Calendar.create({ ...calendar, userId }),
@@ -133,25 +88,19 @@ async function updatePicture(ctx) {
   try {
     const picture = await uploadPicture(filePath, `avatar_${userId}.png`);
 
-    await User.update(
-      { picture: picture.Location },
-      {
-        where: { id: userId },
-      }
-    );
+    await User.updateInfoById(userId, { picture: picture.Location });
 
-    const user = await User.findById(userId);
+    const user = await User.getInfoById(djId);
 
     ctx.status = 200;
-    ctx.body = userInfoSelector(user);
-  } catch (e) {
-    console.log('Error while uploading file: ', e);
+    ctx.body = user;
+  } catch (err) {
     ctx.throw(400, 'Invalid Input');
   }
 }
 
 async function blockUser(ctx) {
-  const userId = ctx.user.get().id;
+  const userId = ctx.user.id;
   const blockedUserId = ctx.params.id;
 
   try {
@@ -173,7 +122,7 @@ async function blockUser(ctx) {
 }
 
 async function postAway(ctx) {
-  const userId = ctx.user.get().id;
+  const userId = ctx.user.id;
   let { awayDays } = ctx.request.body;
 
   if (!awayDays || !Array.isArray(awayDays)) {
@@ -209,7 +158,7 @@ async function postAway(ctx) {
 }
 
 async function deleteAway(ctx) {
-  const userId = ctx.user.get().id;
+  const userId = ctx.user.id;
   const awayDays = ctx.request.body.awayDays;
 
   if (!awayDays || !Array.isArray(awayDays)) {
