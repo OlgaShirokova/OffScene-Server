@@ -7,20 +7,12 @@ export default function(sequelize, DataTypes) {
         primaryKey: true,
         autoIncrement: false,
       },
-      date: DataTypes.DATE,
     },
     {
       timestamps: false,
       associate: function({ AwayDay, User }) {
         AwayDay.belongsTo(User);
       },
-      indexes: [
-        {
-          name: 'dateUserId',
-          fields: ['date', 'userId'],
-          uniq: true,
-        },
-      ],
     }
   );
 
