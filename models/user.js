@@ -1,4 +1,6 @@
 import { encryptAsync } from '~/utils/bcrypt';
+import { userInfoIncludes } from '~/models';
+import { userInfoSelector } from '~/selectors/user';
 
 export default function(sequelize, DataTypes) {
   const User = sequelize.define(
@@ -35,6 +37,7 @@ export default function(sequelize, DataTypes) {
         });
         User.belongsToMany(MusicGenre, { through: 'djGenres' });
       },
+
       hooks: {
         beforeCreate: async function(user) {
           user.password = await encryptAsync(user.password);
@@ -42,6 +45,43 @@ export default function(sequelize, DataTypes) {
       },
     }
   );
+
+  User.getInfoByEmail = function(email, selector) {
+    return this.getInfo('email', email, selector);
+  };
+
+  User.getInfoById = function(id, selector) {
+    return this.getInfo('id', id, selector);
+  };
+
+  User.getInfo = async function(attr, value, selector) {
+    const info = await this.find(
+      {
+        where: { [attr]: value },
+      },
+      {
+        include: userInfoIncludes,
+      }
+    );
+    return selector ? selector(info) : info;
+  };
+
+  User.updateInfoById = function(id, info) {
+    return User.update(info, {
+      attributes: [
+        'name',
+        'picture',
+        'priceWe',
+        'priceWd',
+        'city',
+        'bankAccount',
+        'swift',
+        'lat',
+        'long',
+      ],
+      where: { id },
+    });
+  };
 
   return User;
 }
