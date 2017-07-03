@@ -1,10 +1,9 @@
-import db from '~/models';
+import base64 from 'base-64';
+import db, { calendarAttr, getRole, djId, orgId } from '~/models';
 const { Event, User, Calendar, AwayDay, MusicGenre } = db;
 import { getCoords } from '~/utils/googleApi';
-import base64 from 'base-64';
 import { distToDegreeLat, distToDegreeLon } from '~/utils/geo';
 import { userInfoSelector } from '~/selectors/user';
-
 async function search(ctx) {
   let { priceMin, priceMax, date, musicGenre, city, maxDistance } = ctx.query;
 
@@ -65,7 +64,6 @@ async function search(ctx) {
 
   ctx.body = users.map(user => userInfoSelector(user));
 }
-
 async function offers(ctx) {
   const { id: orgId, role } = ctx.user;
   const { djId, price, location, date } = ctx.request.body;
@@ -128,9 +126,7 @@ async function feedback(ctx) {
 
 async function updateOffer(ctx) {
   const { eventId, status: newStatus } = ctx.request.body;
-  const djId = 'djId';
-  const orgId = 'orgId';
-  const role = [djId, orgId][ctx.user.get().role];
+  const role = getRole(ctx);
 
   const event = await Event.findById(eventId, {
     where: {
