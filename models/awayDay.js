@@ -7,6 +7,7 @@ export default function(sequelize, DataTypes) {
         primaryKey: true,
         autoIncrement: false,
       },
+      date: DataTypes.DATE,
     },
     {
       timestamps: false,
