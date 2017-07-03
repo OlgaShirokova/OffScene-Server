@@ -4,9 +4,8 @@ const { MusicGenre } = db;
 async function genres(ctx) {
   const inputField = ctx.request.url;
   const query = inputField.split('=')[1];
-  console.log('CTXXXX', ctx);
+
   try {
-    console.log(query);
     const genres = await MusicGenre.findAll({
       where: {
         name: { $like: '%' + query + '%' },
