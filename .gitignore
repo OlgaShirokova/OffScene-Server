@@ -4,5 +4,7 @@ npm-debug.log
 yarn-error.log
 .vscode/
 config/env.json
+config/test.json
 db.sqlite
+dbTest.sqlite
 package-lock.json
