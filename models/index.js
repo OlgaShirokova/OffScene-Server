@@ -43,7 +43,7 @@ connection
     force: true,
   })
   .then(function() {
-    createMusicGenres();
+    // createMusicGenres();
   });
 
 async function createMusicGenres() {
@@ -250,3 +250,42 @@ async function createMusicGenres() {
 }
 
 export default db;
+
+export const calendarAttr = [
+  'monday',
+  'tuesday',
+  'wednesday',
+  'thursday',
+  'friday',
+  'saturday',
+  'sunday',
+];
+
+export const eventsAttr = [
+  'id',
+  'date',
+  'status',
+  'djRating',
+  'orgRating',
+  'price',
+  'location',
+  'lat',
+  'long',
+  'createdAt',
+  'updatedAt',
+  'djId',
+  'orgId',
+];
+
+export const djId = 'djId';
+export const orgId = 'orgId';
+
+export function getRole(ctx) {
+  return ['djId', 'orgId'][ctx.user.role];
+}
+
+export const userInfoIncludes = [
+  { model: db.Calendar, attributes: calendarAttr },
+  { model: db.AwayDay, attributes: ['date'] },
+  { model: db.MusicGenre, attributes: ['name'] },
+];
