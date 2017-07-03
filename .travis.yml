@@ -1,9 +1,10 @@
-sudo: false
 language: node_js
-install:
-  - npm install
-node_js:
-  - "iojs"
-  - "7"
-script:
-  - npm test
+node_js: node
+env:
+  - CXX=g++-4.8
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-4.8
