@@ -4,12 +4,14 @@
   ],
   "plugins": [
     "prettier",
-    "import"
+    "import",
+    "babel"
   ],
   "globals": {
     "document": false
   },
   "parserOptions": {
+    "parser": "babel-eslint",
     "ecmaVersion": 2017,
     "sourceType": "module",
     "ecmaFeatures": {

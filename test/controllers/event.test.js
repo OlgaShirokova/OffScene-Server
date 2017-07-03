@@ -4,6 +4,8 @@ import { AuthController, EventController, UserController } from '~/controllers';
 import db from '~/test';
 const { User, Event } = db;
 
+const usersController = new UserController();
+
 const djInfo = {
   email: 'dj@gmail.com',
   password: 'test',
@@ -292,7 +294,7 @@ describe('search', function() {
       city: 'Barcelona',
     };
     const dj1Id = ctx.user.id;
-    await UserController.updateProfile(ctx);
+    await usersController.updateProfile(ctx);
     ctx = await createUserAndLogin({
       email: 'dj2@gmail.com',
       password: 'test',
@@ -312,7 +314,7 @@ describe('search', function() {
       priceWd: 20000,
       city: 'Barcelona',
     };
-    await UserController.updateProfile(ctx);
+    await usersController.updateProfile(ctx);
 
     ctx = await createUserAndLogin(orgInfo);
     ctx.query = {
