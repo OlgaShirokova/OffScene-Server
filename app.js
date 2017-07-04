@@ -9,6 +9,7 @@ new Koa()
     koaBody({
       strict: false,
       multipart: true,
+      formLimit: '1mb',
     })
   )
   .use(logger())

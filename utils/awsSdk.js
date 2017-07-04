@@ -1,5 +1,5 @@
 import fs from 'fs';
-import nconfg from '~/config/nconf';
+import nconf from '~/config/nconf';
 import AWS from 'aws-sdk';
 
 export function uploadPicture(picture, fileName) {

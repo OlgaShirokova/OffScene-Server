@@ -1,8 +1,16 @@
 import { expect } from 'chai';
+import sinon from 'sinon';
 import { AuthController, UserController } from '~/controllers';
 import { userInfoSelector } from '~/selectors/user';
 import db from '~/test';
 const { User, Event, MusicGenre, AwayDay, Calendar } = db;
+
+const usersController = new UserController();
+
+const city = 'Barcelona';
+const coords = { lat: 41.3850639, long: 2.1734035 };
+const getCoordsStub = sinon.stub();
+getCoordsStub.withArgs(city).returns(coords);
 
 const userUpdateInfo = {
   name: 'Donkey Kong',
@@ -37,7 +45,7 @@ describe('events', function() {
   });
 
   it('should return an empty list if the user its not involved in any event', async () => {
-    await UserController.events(ctx);
+    await usersController.events(ctx);
     expect(ctx.body).to.be.an('array');
     expect(ctx.body.length).to.equal(0);
   });
@@ -58,7 +66,7 @@ describe('events', function() {
       djId: ctx.user.id,
     });
 
-    await UserController.events(ctx);
+    await usersController.events(ctx);
     expect(ctx.status).to.equal(201);
     expect(ctx.body).to.be.an('array');
     expect(ctx.body.length).to.equal(1);
@@ -81,7 +89,7 @@ describe('userInfo', function() {
 
   it('should return information about the user requested', async () => {
     ctx.params.id = ctx.user.id;
-    await UserController.userInfo(ctx);
+    await usersController.userInfo(ctx);
     expect(ctx.status).to.equal(201);
     expect(ctx.body).to.be.an('object');
     expect(ctx.body.id).to.equal(ctx.user.id);
@@ -89,7 +97,7 @@ describe('userInfo', function() {
 
   it('should throw an error if the user requested does not exist', async () => {
     ctx.params.id = 11;
-    await UserController.userInfo(ctx);
+    await usersController.userInfo(ctx);
     expect(ctx.body).to.equal('Service not Available');
     expect(ctx.status).to.equal(500);
   });
@@ -106,16 +114,19 @@ describe('userInfo', function() {
       where: { email: ctx.request.body.email },
     });
     ctx.params.id = organizer.id;
-    await UserController.userInfo(ctx);
+    await usersController.userInfo(ctx);
     expect(ctx.status).to.equal(400);
   });
 });
 
 describe('updateProfile', function() {
   let ctx;
+  let usersController;
 
   beforeEach(async () => {
     ctx = await createUserAndLogin();
+    usersController = new UserController();
+    usersController.getCoords = getCoordsStub;
     await MusicGenre.create({
       name: 'rap',
     });
@@ -130,7 +141,7 @@ describe('updateProfile', function() {
 
   it('should update the profile of the authenticated user with the new information provided', async () => {
     ctx.request.body = userUpdateInfo;
-    await UserController.updateProfile(ctx);
+    await usersController.updateProfile(ctx);
 
     const calendarAttr = [
       'monday',
@@ -164,6 +175,87 @@ describe('updateProfile', function() {
   });
 });
 
+const requestPicture = {
+  method: 'POST',
+  url: '/picture',
+  header: {
+    host: 'localhost:3000',
+    connection: 'keep-alive',
+    'content-length': '389899',
+    authorization:
+      'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlhdCI6MTQ5ODY3NjcxNjM0MX0.7DrFWuB7IGor4DY2lEo0AoI6COEiV_-h-4uORRZalNY',
+    'postman-token': '7b4ec96f-3fcb-f78e-dfee-9f5cc7922303',
+    'cache-control': 'no-cache',
+    origin: 'chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop',
+    'user-agent':
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36',
+    'content-type':
+      'multipart/form-data; boundary=----WebKitFormBoundaryT0X8uEqAsqBhalJu',
+    accept: '*/*',
+    'accept-encoding': 'gzip, deflate, br',
+    'accept-language': 'es-ES,es;q=0.8,ru;q=0.6',
+  },
+  body: {
+    fields: {},
+    files: {
+      picture: {
+        domain: null,
+        _events: {},
+        _eventsCount: 0,
+        _maxListeners: undefined,
+        size: 389715,
+        path:
+          '/var/folders/rx/8thfqchn0gq1wlh74ht9z7x00000gn/T/upload_dc3e814db4606d6e05f730b016f',
+        name: 'meme.png',
+        type: 'image/png',
+        hash: null,
+        lastModifiedDate: new Date('2017-07-04T08:17:22.364Z'),
+        _writeStream: null,
+      },
+    },
+  },
+};
+const picture = {
+  ETag: '"7e766504197a141193b7ff9141919037"',
+  Location: 'https://offstage.s3.amazonaws.com/avatar_1.png',
+  key: 'avatar_1.png',
+  Key: 'avatar_1.png',
+  Bucket: 'offstage',
+};
+const path =
+  '/var/folders/rx/8thfqchn0gq1wlh74ht9z7x00000gn/T/upload_dc3e814db4606d6e05f730b016f';
+const name = 'avatar_1.png';
+const uploadPictureStub = sinon.stub();
+uploadPictureStub.withArgs(path, name).returns(picture);
+
+describe('updatePicture', function() {
+  let ctx;
+  let usersController;
+
+  beforeEach(async () => {
+    ctx = await createUserAndLogin();
+    usersController = new UserController();
+    usersController.uploadPicture = uploadPictureStub;
+  });
+
+  afterEach(async () => {
+    await db.connection.sync({ logging: false, force: true });
+  });
+
+  it('should update the profile of the authenticated user with the new picture provided', async () => {
+    ctx.request = requestPicture;
+    await usersController.updatePicture(ctx);
+
+    const user = await User.findById(ctx.user.id);
+
+    const pictureResp = 'https://offstage.s3.amazonaws.com/avatar_1.png';
+
+    ctx.body = userInfoSelector(user);
+    expect(ctx.status).to.equal(200);
+    expect(ctx.body.picture).to.equal(pictureResp);
+  });
+});
+
 describe('blockUser', function() {
   let ctx;
 
@@ -187,7 +279,7 @@ describe('blockUser', function() {
       where: { email: ctx.request.body.email },
     });
     ctx.params.id = organizer.id;
-    await UserController.blockUser(ctx);
+    await usersController.blockUser(ctx);
     expect(ctx.status).to.equal(201);
     const blockedUser = await db.connection.models.blockedUser.find({
       where: {
@@ -202,7 +294,7 @@ describe('blockUser', function() {
 
   it('should fail without throwing errors when the authenticated user is trying to block himself', async () => {
     ctx.params.id = ctx.user.id;
-    await UserController.blockUser(ctx);
+    await usersController.blockUser(ctx);
     expect(ctx.status).to.equal(201);
     const blockedUser = await db.connection.models.blockedUser.find({
       where: {
@@ -225,7 +317,7 @@ describe('blockUser', function() {
       where: { email: ctx.request.body.email },
     });
     ctx.params.id = dj.id;
-    await UserController.blockUser(ctx);
+    await usersController.blockUser(ctx);
     expect(ctx.status).to.equal(201);
     const blockedUser = await db.connection.models.blockedUser.find({
       where: {
@@ -255,7 +347,7 @@ describe('postAway', function() {
       '2017-07-13T00:00:00+00:00',
     ];
 
-    await UserController.postAway(ctx);
+    await usersController.postAway(ctx);
 
     const awayDays = await AwayDay.findAll({
       where: { userId: ctx.user.id },
@@ -270,13 +362,13 @@ describe('postAway', function() {
   });
 
   it('should throw an error when awayDays is not provided', async () => {
-    await UserController.postAway(ctx);
+    await usersController.postAway(ctx);
     expect(['Invalid Input', 'Service not Available']).to.include(ctx.body);
   });
 
   it('should throw an error when awayDays is not an array', async () => {
     ctx.request.body.awayDays = 1;
-    await UserController.postAway(ctx);
+    await usersController.postAway(ctx);
     expect(['Invalid Input', 'Service not Available']).to.include(ctx.body);
   });
 });
@@ -297,8 +389,8 @@ describe('deleteAway', function() {
       awayDays: ['2017-06-30T00:00:00+00:00', '2017-05-30T00:00:00+00:00'],
     };
 
-    await UserController.postAway(ctx);
-    await UserController.deleteAway(ctx);
+    await usersController.postAway(ctx);
+    await usersController.deleteAway(ctx);
     const awayDays = await AwayDay.findAll({
       where: { userId: ctx.user.id },
     });
@@ -310,9 +402,9 @@ describe('deleteAway', function() {
     ctx.request.body = {
       awayDays: ['2017-06-30T00:00:00+00:00', '2017-05-30T00:00:00+00:00'],
     };
-    await UserController.postAway(ctx);
+    await usersController.postAway(ctx);
     delete ctx.request.body.awayDays;
-    await UserController.deleteAway(ctx);
+    await usersController.deleteAway(ctx);
     expect(['Invalid Input', 'Service not Available']).to.include(ctx.body);
   });
 
@@ -320,9 +412,9 @@ describe('deleteAway', function() {
     ctx.request.body = {
       awayDays: ['2017-06-30T00:00:00+00:00', '2017-05-30T00:00:00+00:00'],
     };
-    await UserController.postAway(ctx);
+    await usersController.postAway(ctx);
     ctx.request.body.awayDays = 1;
-    await UserController.deleteAway(ctx);
+    await usersController.deleteAway(ctx);
     expect(['Invalid Input', 'Service not Available']).to.include(ctx.body);
   });
 });

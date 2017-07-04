@@ -14,6 +14,7 @@
     "babel-core": "6.25.0",
     "babel-loader": "7.1.0",
     "babel-plugin-root-import": "5.1.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "6.23.0",
     "babel-preset-latest": "6.24.1",
     "chai": "4.0.2",
@@ -33,14 +34,17 @@
   "dependencies": {
     "aws-sdk": "^2.78.0",
     "axios": "0.16.2",
+    "babel-eslint": "^7.2.3",
     "base-64": "0.1.0",
     "bcrypt": "1.0.2",
+    "eslint-plugin-babel": "^4.1.1",
     "jwt-simple": "0.5.1",
     "koa": "2.3.0",
-    "koa-body": "2.1.0",
+    "koa-body": "^2.3.0",
     "koa-router": "7.2.1",
     "nconf": "^0.8.4",
-    "sequelize": "^4.2.0"
+    "sequelize": "^4.2.0",
+    "sinon": "^2.3.6"
   },
   "lint-staged": {
     "*.js": [
