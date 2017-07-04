@@ -2,7 +2,8 @@ import faker from 'faker';
 import axios from 'axios';
 import Sequelize from 'sequelize';
 import db from '~/models';
-import config from '~/config';
+// import config from '~/config';
+import nconf from '~/config/nconf';
 const { User, AwayDay, Calendar, Event, MusicGenre } = db;
 
 const NUM_ITERATIONS = 3;
@@ -153,18 +154,18 @@ async function createMockData() {
     },
   ]);
 
-  // const blockedUser = await db.connection.models.blockedUser.create({
-  //   userId: dj.get().id,
-  //   blockedUserId: org.get().id,
-  // });
+  const blockedUser = await db.connection.models.blockedUser.create({
+    userId: dj.get().id,
+    blockedUserId: org.get().id,
+  });
 
   const djGenres = await db.connection.models.djGenres.bulkCreate([
     {
-      musicGenreName: 'techno',
+      musicGenreId: '1',
       userId: dj.get().id,
     },
     {
-      musicGenreName: 'house',
+      musicGenreId: '2',
       userId: dj.get().id,
     },
   ]);

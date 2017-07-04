@@ -40,7 +40,7 @@ Object.keys(db).forEach(function(modelName) {
 connection
   .sync({
     loggin: false,
-    force: true,
+    //force: true,
   })
   .then(function() {
     // createMusicGenres();
@@ -287,5 +287,5 @@ export function getRole(ctx) {
 export const userInfoIncludes = [
   { model: db.Calendar, attributes: calendarAttr },
   { model: db.AwayDay, attributes: ['date'] },
-  { model: db.MusicGenre, attributes: ['name'] },
+  { model: db.MusicGenre, attributes: ['id', 'name'] },
 ];

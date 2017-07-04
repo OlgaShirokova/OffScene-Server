@@ -58,10 +58,10 @@ export default function(sequelize, DataTypes) {
     const info = await this.find(
       {
         where: { [attr]: value },
-      },
-      {
         include: userInfoIncludes,
       }
+      // {
+      // }
     );
     return selector ? selector(info) : info;
   };
