@@ -7,6 +7,7 @@ import {
 } from '~/controllers';
 
 const usersController = new UserController();
+const eventsController = new EventController();
 
 const router = new Router();
 
@@ -28,10 +29,10 @@ router
   .post('/picture', AuthController.requireAuth, usersController.updatePicture); // update profile picture
 
 router
-  .get('/search', AuthController.requireAuth, EventController.search) // get all dj's that match a certain criteria specified as query params
-  .post('/offers', AuthController.requireAuth, EventController.offers) // send offer for event
-  .post('/feedback', AuthController.requireAuth, EventController.feedback) // give feedback
-  .put('/offers/:id', AuthController.requireAuth, EventController.updateOffer); // change offer status
+  .get('/search', AuthController.requireAuth, eventsController.search) // get all dj's that match a certain criteria specified as query params
+  .post('/offers', AuthController.requireAuth, eventsController.offers) // send offer for event
+  .post('/feedback', AuthController.requireAuth, eventsController.feedback) // give feedback
+  .put('/offers/:id', AuthController.requireAuth, eventsController.updateOffer); // change offer status
 
 router.get('/genres', AppController.genres);
 

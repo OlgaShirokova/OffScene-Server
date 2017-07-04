@@ -187,29 +187,3 @@ export default class UsersController {
     ctx.status = 201;
   }
 }
-
-// async function updatePicture(ctx) {
-//   const userId = ctx.user.id;
-//   const formData = ctx.request.body;
-//   const filePath = formData.files.picture.path;
-//   try {
-//     const picture = await uploadPicture(filePath, `avatar_${userId}.png`);
-//     await User.updateInfoById(userId, { picture: picture.Location });
-//
-//     const user = await User.getInfoById(userId);
-//
-//     ctx.status = 200;
-//     ctx.body = user;
-//   } catch (err) {
-//     ctx.throw(400, 'Invalid Input');
-//   }
-// }
-
-// export const fn = {
-//   events,
-//   userInfo,
-//   updateProfile,
-//   blockUser,
-//   postAway,
-//   deleteAway,
-// };

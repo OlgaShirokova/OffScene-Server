@@ -1,12 +1,16 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
-import fs from 'fs';
 import { AuthController, UserController } from '~/controllers';
 import { userInfoSelector } from '~/selectors/user';
 import db from '~/test';
 const { User, Event, MusicGenre, AwayDay, Calendar } = db;
 
 const usersController = new UserController();
+
+const city = 'Barcelona';
+const coords = { lat: 41.3850639, long: 2.1734035 };
+const getCoordsStub = sinon.stub();
+getCoordsStub.withArgs(city).returns(coords);
 
 const userUpdateInfo = {
   name: 'Donkey Kong',
@@ -117,9 +121,12 @@ describe('userInfo', function() {
 
 describe('updateProfile', function() {
   let ctx;
+  let usersController;
 
   beforeEach(async () => {
     ctx = await createUserAndLogin();
+    usersController = new UserController();
+    usersController.getCoords = getCoordsStub;
     await MusicGenre.create({
       name: 'rap',
     });

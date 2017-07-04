@@ -1,10 +1,17 @@
 import { expect } from 'chai';
+import sinon from 'sinon';
 import base64 from 'base-64';
 import { AuthController, EventController, UserController } from '~/controllers';
 import db from '~/test';
 const { User, Event } = db;
 
 const usersController = new UserController();
+const eventsController = new EventController();
+
+const city = 'Barcelona';
+const coords = { lat: 41.3850639, long: 2.1734035 };
+const getCoordsStub = sinon.stub();
+getCoordsStub.withArgs(city).returns(coords);
 
 const djInfo = {
   email: 'dj@gmail.com',
@@ -56,6 +63,12 @@ async function createUserAndLogin(ctxInfo) {
 
 describe('offers', function() {
   let ctx;
+  let eventsController;
+
+  beforeEach(async () => {
+    eventsController = new EventController();
+    eventsController.getCoords = getCoordsStub;
+  });
 
   afterEach(async () => {
     await db.connection.sync({ logging: false, force: true });
@@ -64,7 +77,7 @@ describe('offers', function() {
   it('should throw an error if the user performing this action is not an organizer', async () => {
     const ctx = await createUserAndLogin(djInfo);
     try {
-      await EventController.offers(ctx);
+      await eventsController.offers(ctx);
     } catch (err) {
       expect(ctx.body).to.equal('Not Authorized');
       expect(ctx.status).to.equal(400);
@@ -81,7 +94,7 @@ describe('offers', function() {
       location: 'aaaaaa',
     };
     try {
-      await EventController.offers(ctx);
+      await eventsController.offers(ctx);
     } catch (err) {
       expect(ctx.body).to.equal('Invalid Input');
       expect(ctx.status).to.equal(400);
@@ -96,7 +109,7 @@ describe('offers', function() {
       location: 'Madrid',
     };
     try {
-      await EventController.offers(ctx);
+      await eventsController.offers(ctx);
     } catch (err) {
       expect(ctx.body).to.equal('Invalid Input');
       expect(ctx.status).to.equal(400);
@@ -113,13 +126,20 @@ describe('offers', function() {
       location: 'Barcelona',
     };
 
-    await EventController.offers(ctx);
+    await eventsController.offers(ctx);
 
     expect(ctx.status).to.equal(201);
   });
 });
 
 describe('feedback', function() {
+  let eventsController;
+
+  beforeEach(async () => {
+    eventsController = new EventController();
+    eventsController.getCoords = getCoordsStub;
+  });
+
   afterEach(async () => {
     await db.connection.sync({ logging: false, force: true });
   });
@@ -132,7 +152,7 @@ describe('feedback', function() {
     };
 
     try {
-      await EventController.feedback(ctx);
+      await eventsController.feedback(ctx);
     } catch (err) {
       expect(ctx.status).to.equal(400);
       expect(ctx.body).to.equal('Invalid Input');
@@ -148,7 +168,7 @@ describe('feedback', function() {
       price: 8000,
       location: 'Barcelona',
     };
-    await EventController.offers(ctx);
+    await eventsController.offers(ctx);
     const event = await Event.find({
       where: {
         djId,
@@ -159,9 +179,9 @@ describe('feedback', function() {
       eventId: event.id,
       rating: 500,
     };
-    await EventController.feedback(ctx);
+    await eventsController.feedback(ctx);
     try {
-      await EventController.feedback(ctx);
+      await eventsController.feedback(ctx);
     } catch (err) {
       expect(ctx.status).to.equal(400);
       expect(ctx.body).to.equal('You already voted');
@@ -177,7 +197,7 @@ describe('feedback', function() {
       price: 8000,
       location: 'Barcelona',
     };
-    await EventController.offers(ctx);
+    await eventsController.offers(ctx);
     const event = await Event.find({
       where: {
         djId,
@@ -188,12 +208,19 @@ describe('feedback', function() {
       eventId: event.id,
       rating: 500,
     };
-    await EventController.feedback(ctx);
+    await eventsController.feedback(ctx);
     expect(ctx.status).to.equal(201);
   });
 });
 
 describe('updateOffer', function() {
+  let eventsController;
+
+  beforeEach(async () => {
+    eventsController = new EventController();
+    eventsController.getCoords = getCoordsStub;
+  });
+
   afterEach(async () => {
     await db.connection.sync({ logging: false, force: true });
   });
@@ -204,7 +231,7 @@ describe('updateOffer', function() {
       status: 1,
     };
     try {
-      await EventController.updateOffer(ctx);
+      await eventsController.updateOffer(ctx);
     } catch (err) {
       expect(ctx.status).to.equal(400);
       expect(ctx.body).to.equal('Not Authorized');
@@ -221,7 +248,7 @@ describe('updateOffer', function() {
       location: 'Barcelona',
     };
 
-    await EventController.offers(ctx);
+    await eventsController.offers(ctx);
 
     const event = await Event.find({
       where: {
@@ -236,7 +263,7 @@ describe('updateOffer', function() {
     };
 
     try {
-      await EventController.feedback(ctx);
+      await eventsController.feedback(ctx);
     } catch (err) {
       expect(ctx.status).to.equal(400);
       expect(ctx.body).to.equal('Not Authorized');
@@ -253,7 +280,7 @@ describe('updateOffer', function() {
       location: 'Barcelona',
     };
 
-    await EventController.offers(ctx);
+    await eventsController.offers(ctx);
 
     const event = await Event.find({
       where: {
@@ -270,12 +297,22 @@ describe('updateOffer', function() {
       eventId: event.id,
       status: 1,
     };
-    await EventController.feedback(ctx);
+    await eventsController.feedback(ctx);
     expect(ctx.status).to.equal(201);
   });
 });
 
 describe('search', function() {
+  let usersController;
+  let eventsController;
+
+  beforeEach(async () => {
+    usersController = new UserController();
+    usersController.getCoords = getCoordsStub;
+    eventsController = new EventController();
+    eventsController.getCoords = getCoordsStub;
+  });
+
   it('should return a list of djs filtered by the specified criteria', async () => {
     let ctx = await createUserAndLogin(djInfo);
 
@@ -325,7 +362,7 @@ describe('search', function() {
       city: 'Barcelona',
       maxDistance: 2000,
     };
-    await EventController.search(ctx);
+    await eventsController.search(ctx);
     expect(ctx.body.length).to.equal(0);
   });
 });
