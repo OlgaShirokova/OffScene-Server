@@ -27,7 +27,7 @@ export default class EventsController {
 
     const isoDate = new Date(Number(date)).toISOString().split('T')[0];
 
-    const genres = [...base64.decode(musicGenre).split(','), 'caca'];
+    const genres = [...base64.decode(musicGenre).split(',')];
 
     const lat = distToDegreeLat(maxDistance);
     const long = distToDegreeLon(maxDistance, lat);
