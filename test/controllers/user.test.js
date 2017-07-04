@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
+import fs from 'fs';
 import { AuthController, UserController } from '~/controllers';
 import { userInfoSelector } from '~/selectors/user';
 import db from '~/test';
@@ -167,61 +168,58 @@ describe('updateProfile', function() {
   });
 });
 
-//////////////////////////////////////////////////
-const responsePicture = {
-  id: 1,
-  email: 'test@gmail.com',
-  password: '$2a$10$MpWWWm/CIZ5zokQxj4KX/.lLCWPWzVEWWX4yj0Po0r3bcsx9h16Zu',
-  name: null,
-  role: 0,
-  staff: null,
-  picture: 'https://offstage.s3.amazonaws.com/avatar_1.png',
-  priceWe: null,
-  priceWd: null,
-  city: null,
-  lat: null,
-  long: null,
-  avgRating: null,
-  bankAccount: null,
-  swift: null,
-  createdAt: '2017-07-03T10:17:48.651Z',
-  updatedAt: '2017-07-03T10:17:55.709Z',
-};
-
 const requestPicture = {
-  request: {
-    method: 'POST',
-    url: '/picture',
-    header: {
-      host: 'localhost:3000',
-      connection: 'keep-alive',
-      'content-length': '389899',
-      authorization:
-        'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlhdCI6MTQ5ODY3NjcxNjM0MX0.7DrFWuB7IGor4DY2lEo0AoI6COEiV_-h-4uORRZalNY',
-      'postman-token': '7b4ec96f-3fcb-f78e-dfee-9f5cc7922303',
-      'cache-control': 'no-cache',
-      origin: 'chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop',
-      'user-agent':
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36',
-      'content-type':
-        'multipart/form-data; boundary=----WebKitFormBoundaryT0X8uEqAsqBhalJu',
-      accept: '*/*',
-      'accept-encoding': 'gzip, deflate, br',
-      'accept-language': 'es-ES,es;q=0.8,ru;q=0.6',
+  method: 'POST',
+  url: '/picture',
+  header: {
+    host: 'localhost:3000',
+    connection: 'keep-alive',
+    'content-length': '389899',
+    authorization:
+      'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlhdCI6MTQ5ODY3NjcxNjM0MX0.7DrFWuB7IGor4DY2lEo0AoI6COEiV_-h-4uORRZalNY',
+    'postman-token': '7b4ec96f-3fcb-f78e-dfee-9f5cc7922303',
+    'cache-control': 'no-cache',
+    origin: 'chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop',
+    'user-agent':
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36',
+    'content-type':
+      'multipart/form-data; boundary=----WebKitFormBoundaryT0X8uEqAsqBhalJu',
+    accept: '*/*',
+    'accept-encoding': 'gzip, deflate, br',
+    'accept-language': 'es-ES,es;q=0.8,ru;q=0.6',
+  },
+  body: {
+    fields: {},
+    files: {
+      picture: {
+        domain: null,
+        _events: {},
+        _eventsCount: 0,
+        _maxListeners: undefined,
+        size: 389715,
+        path:
+          '/var/folders/rx/8thfqchn0gq1wlh74ht9z7x00000gn/T/upload_dc3e814db4606d6e05f730b016f',
+        name: 'meme.png',
+        type: 'image/png',
+        hash: null,
+        lastModifiedDate: new Date('2017-07-04T08:17:22.364Z'),
+        _writeStream: null,
+      },
     },
   },
-  // response: { status: 404, message: 'Not Found', header: {} },
-  // app: { subdomainOffset: 2, proxy: false, env: 'development' },
-  // originalUrl: '/picture',
-  // req: '<original node req>',
-  // res: '<original node res>',
-  // socket: '<original node socket>'
 };
-
+const picture = {
+  ETag: '"7e766504197a141193b7ff9141919037"',
+  Location: 'https://offstage.s3.amazonaws.com/avatar_1.png',
+  key: 'avatar_1.png',
+  Key: 'avatar_1.png',
+  Bucket: 'offstage',
+};
+const path =
+  '/var/folders/rx/8thfqchn0gq1wlh74ht9z7x00000gn/T/upload_dc3e814db4606d6e05f730b016f';
+const name = 'avatar_1.png';
 const uploadPictureStub = sinon.stub();
-uploadPictureStub.withArgs(requestPicture).returns(responsePicture); //form data
-uploadPictureStub.withArgs().throws('Invalid Input'); // error inputs
-////////////////////////////////////////////////////
+uploadPictureStub.withArgs(path, name).returns(picture);
 
 describe('updatePicture', function() {
   let ctx;
@@ -230,7 +228,6 @@ describe('updatePicture', function() {
   beforeEach(async () => {
     ctx = await createUserAndLogin();
     usersController = new UserController();
-    console.log('BEFORE', ctx);
     usersController.uploadPicture = uploadPictureStub;
   });
 
@@ -239,18 +236,10 @@ describe('updatePicture', function() {
   });
 
   it('should update the profile of the authenticated user with the new picture provided', async () => {
-    ctx = requestPicture;
+    ctx.request = requestPicture;
     await usersController.updatePicture(ctx);
-    console.log('AFTER', ctx);
 
-    const user = await User.findById(
-      ctx.user.id
-      // include: [
-      //   { model: Calendar, attributes: calendarAttr },
-      //   { model: AwayDay, attributes: ['date'] },
-      //   { model: MusicGenre, attributes: ['name'] },
-      // ],
-    );
+    const user = await User.findById(ctx.user.id);
 
     const pictureResp = 'https://offstage.s3.amazonaws.com/avatar_1.png';
 

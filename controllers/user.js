@@ -11,12 +11,10 @@ export default class UsersController {
   }
 
   updatePicture = async ctx => {
-    console.log('------------', ctx);
     const userId = ctx.user.dataValues.id;
     const formData = ctx.request.body;
     const filePath = formData.files.picture.path;
     try {
-      console.log(ctx);
       const fileName = `avatar_${userId}.png`;
       const picture = await this.uploadPicture(filePath, fileName);
       await User.updateInfoById(userId, { picture: picture.Location });
@@ -26,7 +24,6 @@ export default class UsersController {
       ctx.status = 200;
       ctx.body = user;
     } catch (err) {
-      console.log('ERRRR', err);
       ctx.throw(400, 'Invalid Input');
     }
   };
