@@ -8,3 +8,4 @@ config/test.json
 db.sqlite
 dbTest.sqlite
 package-lock.json
+dbTest.sqlite
