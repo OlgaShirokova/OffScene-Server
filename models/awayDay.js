@@ -14,13 +14,6 @@ export default function(sequelize, DataTypes) {
       associate: function({ AwayDay, User }) {
         AwayDay.belongsTo(User);
       },
-      indexes: [
-        {
-          name: 'dateUserId',
-          fields: ['date', 'userId'],
-          uniq: true,
-        },
-      ],
     }
   );
 

@@ -1,0 +1,13 @@
+{
+  "AWS_ACCESS_KEY_ID": "AKIAJSVOVXEJEUVNEU5A",
+  "AWS_SECRET_ACCESS_KEY": "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",
+  "AWS_REGION": "eu-west-1",
+  "DB_NAME": "dbTest",
+  "DB_USERNAME": "root",
+  "DB_PASSWORD": "password",
+  "DB_HOST": "localhost",
+  "DB_DIALECT": "sqlite",
+  "DB_STORAGE": "dbTest.sqlite",
+  "SECRET": "admadmakdmadkamdakdmakdmakdmakdmaeo22324",
+  "GOOGLE_API_KEY": "AIzaSyCzVFazeXm8fo_HrFrk0TjwxD3_RvDifM8"
+}

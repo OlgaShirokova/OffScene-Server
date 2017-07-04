@@ -1,9 +1,9 @@
-import db from '~/models';
-const { User, AwayDay, Calendar, MusicGenre } = db;
+import db, { calendarAttr } from '~/models';
 import { encryptAsync, isSamePasswordAsync } from '~/utils/bcrypt';
-import { decodeJwt } from '~/utils/jwt';
+import { encodeJwt, decodeJwt } from '~/utils/jwt';
 import { getCredentials } from '~/utils/base64';
 import { signInSelector } from '~/selectors/user';
+const { User, AwayDay, Calendar, MusicGenre } = db;
 const TOKEN_EXPIRATION_DATE = 2.628e9; // 1 month in milliseconds
 
 async function signIn(ctx) {
@@ -15,26 +15,7 @@ async function signIn(ctx) {
 
   const { email, password } = getCredentials(b64EncodedUserCreds);
 
-  const calendarAttr = [
-    'monday',
-    'tuesday',
-    'wednesday',
-    'thursday',
-    'friday',
-    'saturday',
-    'sunday',
-  ];
-
-  const user = await User.findOne({
-    where: {
-      email,
-    },
-    include: [
-      { model: Calendar, attributes: calendarAttr },
-      { model: AwayDay, attributes: ['date'] },
-      { model: MusicGenre, attributes: ['name'] },
-    ],
-  });
+  const user = await User.getInfoByEmail(email);
 
   if (!user) {
     ctx.throw(400, 'Incorrect credentials');
@@ -45,6 +26,7 @@ async function signIn(ctx) {
   if (!isEqual) {
     ctx.throw(400, 'Incorrect credentials');
   }
+
   ctx.body = signInSelector(user);
 }
 
@@ -65,7 +47,7 @@ async function signUp(ctx) {
 }
 
 async function requireAuth(ctx, next) {
-  const token = ctx.headers.authorization;
+  const token = ctx.header.authorization;
 
   if (!token) {
     ctx.throw(400, 'Not Authorized');

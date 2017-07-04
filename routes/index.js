@@ -26,10 +26,10 @@ router
   .post('/picture', AuthController.requireAuth, UserController.updatePicture); // update profile picture
 
 router
-  .get('/search', EventController.search) // get all dj's that match a certain criteria specified as query params
-  .post('/offers', EventController.offers) // send offer for event
-  .post('/feedback', EventController.feedback) // give feedback
-  .put('/offers/:id', EventController.updateOffer); // change offer status
+  .get('/search', AuthController.requireAuth, EventController.search) // get all dj's that match a certain criteria specified as query params
+  .post('/offers', AuthController.requireAuth, EventController.offers) // send offer for event
+  .post('/feedback', AuthController.requireAuth, EventController.feedback) // give feedback
+  .put('/offers/:id', AuthController.requireAuth, EventController.updateOffer); // change offer status
 
 router.get('/genres', AppController.genres);
 

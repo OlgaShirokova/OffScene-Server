@@ -4,7 +4,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec 'babel-node' ./app.js",
-    "precommit": "lint-staged --verbose"
+    "precommit": "lint-staged --verbose",
+    "test": "NODE_ENV=testing mocha --timeout 10000 --require babel-core/register --require babel-polyfill --recursive",
+    "test:watch": "NODE_ENV=testing nodemon --exec 'mocha --timeout 10000 --require babel-core/register --require babel-polyfill --recursive'",
+    "seed": "babel-node ./utils/seeds.js"
   },
   "devDependencies": {
     "babel-cli": "6.24.1",
@@ -13,6 +16,7 @@
     "babel-plugin-root-import": "5.1.0",
     "babel-plugin-transform-object-rest-spread": "6.23.0",
     "babel-preset-latest": "6.24.1",
+    "chai": "4.0.2",
     "eslint": "4.0.0",
     "eslint-config-prettier": "2.2.0",
     "eslint-plugin-import": "^2.6.0",
@@ -21,6 +25,7 @@
     "husky": "0.14.0",
     "koa-logger": "3.0.0",
     "lint-staged": "4.0.0",
+    "mocha": "3.4.2",
     "nodemon": "1.11.0",
     "prettier": "1.4.4",
     "sqlite3": "^3.1.8"
