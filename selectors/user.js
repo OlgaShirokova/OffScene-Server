@@ -56,7 +56,8 @@ export function userInfoSelector(userInfo) {
 
   awayDays && (awayDays = awayDays.map(({ date }) => date));
 
-  musicGenres && (musicGenres = musicGenres.map(({ name }) => name));
+  musicGenres &&
+    (musicGenres = musicGenres.map(({ id, name }) => ({ id, name })));
 
   const outputValue = mutateNullToUndefined({
     id,

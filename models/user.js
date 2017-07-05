@@ -55,14 +55,10 @@ export default function(sequelize, DataTypes) {
   };
 
   User.getInfo = async function(attr, value, selector) {
-    const info = await this.find(
-      {
-        where: { [attr]: value },
-        include: userInfoIncludes,
-      }
-      // {
-      // }
-    );
+    const info = await this.find({
+      where: { [attr]: value },
+      include: userInfoIncludes,
+    });
     return selector ? selector(info) : info;
   };
 
