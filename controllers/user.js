@@ -60,7 +60,7 @@ export default class UsersController {
     }
   }
 
-  async updateProfile(ctx) {
+  updateProfile = async ctx => {
     const userId = ctx.user.id;
     let {
       calendar,
@@ -70,7 +70,6 @@ export default class UsersController {
     } = ctx.request.body;
 
     const coords = await this.getCoords(userInfo.city);
-
     if (!coords) {
       ctx.throw(400, 'Invalid Input');
     }
@@ -85,8 +84,8 @@ export default class UsersController {
       userInfo.long = coords.long;
 
       awayDays = awayDays.map(date => ({ date, userId }));
-      musicGenres = musicGenres.map(musicGenreName => ({
-        musicGenreName,
+      musicGenres = musicGenres.map(musicGenreId => ({
+        musicGenreId,
         userId,
       }));
 
@@ -103,7 +102,7 @@ export default class UsersController {
     }
 
     ctx.status = 201;
-  }
+  };
 
   async blockUser(ctx) {
     const userId = ctx.user.id;

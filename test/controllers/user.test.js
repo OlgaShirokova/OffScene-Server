@@ -133,6 +133,16 @@ describe('updateProfile', function() {
     await MusicGenre.create({
       name: 'dance',
     });
+    await db.connection.models.djGenres.bulkCreate([
+      {
+        musicGenreId: '1',
+        userId: ctx.body.id,
+      },
+      {
+        musicGenreId: '2',
+        userId: ctx.body.id,
+      },
+    ]);
   });
 
   afterEach(async () => {
@@ -157,7 +167,7 @@ describe('updateProfile', function() {
       include: [
         { model: Calendar, attributes: calendarAttr },
         { model: AwayDay, attributes: ['date'] },
-        { model: MusicGenre, attributes: ['name'] },
+        { model: MusicGenre, attributes: ['id', 'name'] },
       ],
     });
 
@@ -171,7 +181,9 @@ describe('updateProfile', function() {
     expect(ctx.body.lat).to.not.equal(null);
     expect(ctx.body.long).to.not.equal(null);
     expect(ctx.body.calendar.get()).to.eql(ctx.request.body.calendar);
-    expect(ctx.body.musicGenres).to.include(ctx.request.body.musicGenres[0]);
+    expect(ctx.body.musicGenres[0].name).to.equal(
+      ctx.request.body.musicGenres[0]
+    );
   });
 });
 
