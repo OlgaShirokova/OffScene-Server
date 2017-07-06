@@ -77,7 +77,7 @@ async function createMockGenres() {
 async function createMockData() {
   const org = await User.create({
     email: faker.internet.email(),
-    password: faker.internet.password(),
+    password: 'test',
     name: faker.name.findName(),
     role: 1,
     staff: Math.round(Math.random()),
@@ -90,13 +90,13 @@ async function createMockData() {
 
   const dj = await User.create({
     email: faker.internet.email(),
-    password: faker.internet.password(),
+    password: 'test',
     name: faker.name.findName(),
     role: 0,
     staff: Math.round(Math.random()),
     picture: faker.image.avatar(),
-    priceWe: Math.round(Math.random() * 10000 * 100),
-    priceWd: Math.round(Math.random() * 10000 * 100),
+    priceWe: Math.round(Math.random() * 5500),
+    priceWd: Math.round(Math.random() * 5500),
     city: userCity,
     lat: uLat,
     long: uLng,

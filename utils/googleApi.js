@@ -13,5 +13,8 @@ export function getCoords(city) {
       lat: data.results[0].geometry.location.lat,
       long: data.results[0].geometry.location.lng,
     }))
-    .catch(() => null);
+    .catch(err => {
+      console.log('ggApiKey', err);
+      return null;
+    });
 }

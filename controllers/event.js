@@ -5,13 +5,40 @@ import { getCoords } from '~/utils/googleApi';
 import { distToDegreeLat, distToDegreeLon } from '~/utils/geo';
 import { userInfoSelector } from '~/selectors/user';
 
+function shuffle(array) {
+  let counter = array.length;
+
+  // While there are elements in the array
+  while (counter > 0) {
+    // Pick a random index
+    let index = Math.floor(Math.random() * counter);
+
+    // Decrease counter by 1
+    counter--;
+
+    // And swap the last element with it
+    let temp = array[counter];
+    array[counter] = array[index];
+    array[index] = temp;
+  }
+
+  return array;
+}
+
 export default class EventsController {
   constructor() {
     this.getCoords = getCoords;
   }
 
   async search(ctx) {
-    let { priceMin, priceMax, date, musicGenre, city, maxDistance } = ctx.query;
+    let {
+      priceMin = 0,
+      priceMax = 99999999,
+      date,
+      musicGenre,
+      city,
+      maxDistance,
+    } = ctx.query;
 
     // const calendarAttr = [
     //   'monday',
@@ -72,6 +99,9 @@ export default class EventsController {
     const users = await User.findAll({
       where: {
         role: 0,
+        [new Date(Number(date)).getDay() <= 5 ? 'priceWd' : 'priceWe']: {
+          $between: [priceMin, priceMax],
+        },
       },
       include: [
         { model: Calendar, attributes: calendarAttr },
@@ -86,13 +116,14 @@ export default class EventsController {
       ],
     });
 
-    ctx.body = users.map(user => userInfoSelector(user));
+    ctx.body = shuffle(users.map(user => userInfoSelector(user)));
   }
 
   async offers(ctx) {
     const { id: orgId, role } = ctx.user;
-    const { djId, price, location, date } = ctx.request.body;
 
+    const { djId, price, location, date } = ctx.request.body;
+    console.log('offers', ctx.request.body);
     if (role !== 1) {
       ctx.throw(400, 'Not Authorized');
     }
@@ -100,15 +131,22 @@ export default class EventsController {
     if (isNaN(price) || typeof price !== 'number') {
       ctx.throw(400, 'Invalid Input');
     }
+    console.log(1);
+    try {
+      var [dj, coords] = await Promise.all([
+        User.findById(djId),
+        getCoords(location),
+      ]);
+    } catch (err) {
+      console.log('fiu', err);
+    }
 
-    const [dj, coords] = await Promise.all([
-      User.findById(djId),
-      this.getCoords(location),
-    ]);
+    console.log(2);
 
     if (!dj || !coords) {
       ctx.throw(400, 'Invalid Input');
     }
+    console.log(2);
     const { lat, long } = coords;
 
     try {
@@ -125,7 +163,7 @@ export default class EventsController {
     } catch (err) {
       ctx.throw(500, 'Service not Available');
     }
-
+    console.log(3);
     ctx.status = 201;
   }
 
