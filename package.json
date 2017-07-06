@@ -29,8 +29,7 @@
     "mocha": "3.4.2",
     "nodemon": "1.11.0",
     "prettier": "1.4.4",
-    "sqlite3": "^3.1.8",
-    "webpack": "^3.0.0"
+    "sqlite3": "^3.1.8"
   },
   "dependencies": {
     "aws-sdk": "^2.78.0",
@@ -43,6 +42,7 @@
     "koa": "2.3.0",
     "koa-body": "^2.3.0",
     "koa-router": "7.2.1",
+    "koa2-cors": "2.0.3",
     "nconf": "^0.8.4",
     "sequelize": "^4.2.0",
     "sinon": "^2.3.6"
