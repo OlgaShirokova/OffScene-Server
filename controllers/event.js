@@ -13,57 +13,75 @@ export default class EventsController {
   async search(ctx) {
     let { priceMin, priceMax, date, musicGenre, city, maxDistance } = ctx.query;
 
-    const calendarAttr = [
-      'monday',
-      'tuesday',
-      'wednesday',
-      'thursday',
-      'friday',
-      'saturday',
-      'sunday',
-    ];
+    // const calendarAttr = [
+    //   'monday',
+    //   'tuesday',
+    //   'wednesday',
+    //   'thursday',
+    //   'friday',
+    //   'saturday',
+    //   'sunday',
+    // ];
 
-    const weekDay = calendarAttr[new Date(Number(date)).getDay()];
+    // const weekDay = calendarAttr[new Date(Number(date)).getDay()];
 
-    const isoDate = new Date(Number(date)).toISOString().split('T')[0];
+    // const isoDate = new Date(Number(date)).toISOString().split('T')[0];
 
-    const genres = [...base64.decode(musicGenre).split(',')];
+    // const genres = [...base64.decode(musicGenre).split(',')];
 
-    const lat = distToDegreeLat(maxDistance);
-    const long = distToDegreeLon(maxDistance, lat);
-    const coords = await this.getCoords(city);
+    // const lat = distToDegreeLat(maxDistance);
+    // const long = distToDegreeLon(maxDistance, lat);
+    // const coords = await this.getCoords(city);
 
-    const rangeLat = [coords.lat - lat, coords.lat + lat];
-    const rangeLong = [coords.long - long, coords.long + long];
+    // const rangeLat = [coords.lat - lat, coords.lat + lat];
+    // const rangeLong = [coords.long - long, coords.long + long];
 
+    // const users = await User.findAll({
+    //   where: {
+    //     $and: {
+    //       '$musicGenres.name$': {
+    //         $in: genres,
+    //       },
+    //       lat: {
+    //         $between: rangeLat,
+    //       },
+    //       long: {
+    //         $between: rangeLong,
+    //       },
+
+    //       role: 0,
+    //       [new Date(Number(date)).getDay() <= 5 ? 'priceWd' : 'priceWe']: {
+    //         $between: [priceMin, priceMax],
+    //       },
+    //     },
+    //   },
+    //   include: [
+    //     { model: Calendar, attributes: calendarAttr, where: { [weekDay]: 1 } },
+    //     {
+    //       model: AwayDay,
+    //       attributes: ['date'],
+    //     },
+    //     {
+    //       model: MusicGenre,
+    //       attributes: ['name'],
+    //     },
+    //   ],
+    // });
+
+    // ctx.body = users.map(user => userInfoSelector(user));
     const users = await User.findAll({
       where: {
-        $and: {
-          '$musicGenres.name$': {
-            $in: genres,
-          },
-          lat: {
-            $between: rangeLat,
-          },
-          long: {
-            $between: rangeLong,
-          },
-
-          role: 0,
-          [new Date(Number(date)).getDay() <= 5 ? 'priceWd' : 'priceWe']: {
-            $between: [priceMin, priceMax],
-          },
-        },
+        role: 0,
       },
       include: [
-        { model: Calendar, attributes: calendarAttr, where: { [weekDay]: 1 } },
+        { model: Calendar, attributes: calendarAttr },
         {
           model: AwayDay,
           attributes: ['date'],
         },
         {
           model: MusicGenre,
-          attributes: ['name'],
+          attributes: ['id', 'name'],
         },
       ],
     });
