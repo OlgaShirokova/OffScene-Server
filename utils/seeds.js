@@ -6,7 +6,7 @@ import db from '~/models';
 import nconf from '~/config/nconf';
 const { User, AwayDay, Calendar, Event, MusicGenre } = db;
 
-const NUM_ITERATIONS = 3;
+const NUM_ITERATIONS = 40;
 let userCity = '';
 let eventCity = '';
 let uLat = 0;
