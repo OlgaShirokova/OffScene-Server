@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { AuthController, UserController, AppController } from '~/controllers';
 import db from '~/test';
-const { User, Event, MusicGenre, AwayDay, Calendar } = db;
+const { User, Event, MovieGenre, AwayDay, Calendar } = db;
 
 const musicInput = {
   request: {
@@ -27,14 +27,14 @@ const musicInput = {
   socket: '<original node socket>',
 };
 
-describe('autocompleteMusicGenres', function() {
+describe('autocompleteMovieGenres', function() {
   let ctx;
 
   beforeEach(async () => {
-    await MusicGenre.create({
+    await MovieGenre.create({
       name: 'electro',
     });
-    await MusicGenre.create({
+    await MovieGenre.create({
       name: 'hard hop',
     });
   });

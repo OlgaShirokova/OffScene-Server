@@ -1,6 +1,6 @@
 export default function(sequelize, DataTypes) {
-  const MusicGenre = sequelize.define(
-    'musicGenre',
+  const MovieGenre = sequelize.define(
+    'movieGenre',
     {
       name: {
         type: DataTypes.STRING,
@@ -8,12 +8,12 @@ export default function(sequelize, DataTypes) {
       },
     },
     {
-      associate: function({ MusicGenre, User }) {
-        MusicGenre.belongsToMany(User, { through: 'djGenres' });
+      associate: function({ MovieGenre, User }) {
+        MovieGenre.belongsToMany(User, { through: 'djGenres' });
       },
       timestamps: false,
     }
   );
 
-  return MusicGenre;
+  return MovieGenre;
 }

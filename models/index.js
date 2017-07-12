@@ -43,11 +43,11 @@ connection
     //force: true,
   })
   .then(function() {
-    // createMusicGenres();
+    // createMovieGenres();
   });
 
-async function createMusicGenres() {
-  const musicGenre = await db.MusicGenre.bulkCreate([
+async function createMovieGenres() {
+  const movieGenre = await db.MovieGenre.bulkCreate([
     {
       name: 'acid',
     },
@@ -287,5 +287,5 @@ export function getRole(ctx) {
 export const userInfoIncludes = [
   { model: db.Calendar, attributes: calendarAttr },
   { model: db.AwayDay, attributes: ['date'] },
-  { model: db.MusicGenre, attributes: ['id', 'name'] },
+  { model: db.MovieGenre, attributes: ['id', 'name'] },
 ];

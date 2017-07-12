@@ -358,7 +358,7 @@ describe('search', function() {
       priceMin: 1000,
       priceMax: 9000,
       date: 1499019327347,
-      musicGenre: 'cmFwLGRhbmNl',
+      movieGenre: 'cmFwLGRhbmNl',
       city: 'Barcelona',
       maxDistance: 2000,
     };

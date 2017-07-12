@@ -3,7 +3,7 @@ import { encryptAsync, isSamePasswordAsync } from '~/utils/bcrypt';
 import { encodeJwt, decodeJwt } from '~/utils/jwt';
 import { getCredentials } from '~/utils/base64';
 import { signInSelector } from '~/selectors/user';
-const { User, AwayDay, Calendar, MusicGenre } = db;
+const { User, AwayDay, Calendar, MovieGenre } = db;
 const TOKEN_EXPIRATION_DATE = 2.628e9; // 1 month in milliseconds
 
 async function signIn(ctx) {

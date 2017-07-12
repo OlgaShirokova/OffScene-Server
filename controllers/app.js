@@ -1,12 +1,12 @@
 import db from '~/models';
-const { MusicGenre } = db;
+const { MovieGenre } = db;
 
 async function genres(ctx) {
   const inputField = ctx.request.url;
   const query = inputField.split('=')[1];
 
   try {
-    const genres = await MusicGenre.findAll({
+    const genres = await MovieGenre.findAll({
       where: {
         name: { $like: '%' + query + '%' },
       },

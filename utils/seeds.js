@@ -4,7 +4,7 @@ import Sequelize from 'sequelize';
 import db from '~/models';
 // import config from '~/config';
 import nconf from '~/config/nconf';
-const { User, AwayDay, Calendar, Event, MusicGenre } = db;
+const { User, AwayDay, Calendar, Event, MovieGenre } = db;
 
 const NUM_ITERATIONS = 40;
 let userCity = '';
@@ -64,12 +64,12 @@ function getEventCity(eventCity) {
 }
 
 async function createMockGenres() {
-  const musicGenre = await MusicGenre.bulkCreate([
+  const movieGenre = await MovieGenre.bulkCreate([
     {
-      name: 'techno',
+      name: 'comedy',
     },
     {
-      name: 'house',
+      name: 'action',
     },
   ]);
 }
@@ -161,11 +161,11 @@ async function createMockData() {
 
   const djGenres = await db.connection.models.djGenres.bulkCreate([
     {
-      musicGenreId: '1',
+      movieGenreId: '1',
       userId: dj.get().id,
     },
     {
-      musicGenreId: '2',
+      movieGenreId: '2',
       userId: dj.get().id,
     },
   ]);

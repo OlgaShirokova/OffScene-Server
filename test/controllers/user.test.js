@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import { AuthController, UserController } from '~/controllers';
 import { userInfoSelector } from '~/selectors/user';
 import db from '~/test';
-const { User, Event, MusicGenre, AwayDay, Calendar } = db;
+const { User, Event, MovieGenre, AwayDay, Calendar } = db;
 
 const usersController = new UserController();
 
@@ -27,7 +27,7 @@ const userUpdateInfo = {
   priceWe: 1000000,
   priceWd: 500000,
   city: 'Barcelona',
-  musicGenres: ['rap', 'dance'],
+  movieGenres: ['rap', 'dance'],
   awayDays: ['2017-06-30T00:00:00+00:00', '2017-05-30T00:00:00+00:00'],
   bankAccount: 'ES426482984767436846874276346',
   swift: 'XF35',
@@ -127,19 +127,19 @@ describe('updateProfile', function() {
     ctx = await createUserAndLogin();
     usersController = new UserController();
     usersController.getCoords = getCoordsStub;
-    await MusicGenre.create({
+    await MovieGenre.create({
       name: 'rap',
     });
-    await MusicGenre.create({
+    await MovieGenre.create({
       name: 'dance',
     });
     await db.connection.models.djGenres.bulkCreate([
       {
-        musicGenreId: '1',
+        movieGenreId: '1',
         userId: ctx.body.id,
       },
       {
-        musicGenreId: '2',
+        movieGenreId: '2',
         userId: ctx.body.id,
       },
     ]);
@@ -167,7 +167,7 @@ describe('updateProfile', function() {
       include: [
         { model: Calendar, attributes: calendarAttr },
         { model: AwayDay, attributes: ['date'] },
-        { model: MusicGenre, attributes: ['id', 'name'] },
+        { model: MovieGenre, attributes: ['id', 'name'] },
       ],
     });
 
@@ -181,8 +181,8 @@ describe('updateProfile', function() {
     expect(ctx.body.lat).to.not.equal(null);
     expect(ctx.body.long).to.not.equal(null);
     expect(ctx.body.calendar.get()).to.eql(ctx.request.body.calendar);
-    expect(ctx.body.musicGenres[0].name).to.equal(
-      ctx.request.body.musicGenres[0]
+    expect(ctx.body.movieGenres[0].name).to.equal(
+      ctx.request.body.movieGenres[0]
     );
   });
 });

@@ -29,7 +29,7 @@ router
   .post('/picture', AuthController.requireAuth, usersController.updatePicture); // update profile picture
 
 router
-  .get('/search', AuthController.requireAuth, eventsController.search) // get all dj's that match a certain criteria specified as query params
+  .get('/search', eventsController.search) // get all dj's that match a certain criteria specified as query params
   .post('/offers', AuthController.requireAuth, eventsController.offers) // send offer for event
   .post('/feedback', AuthController.requireAuth, eventsController.feedback) // give feedback
   .put('/offers/:id', AuthController.requireAuth, eventsController.updateOffer); // change offer status

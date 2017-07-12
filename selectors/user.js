@@ -51,13 +51,13 @@ export function userInfoSelector(userInfo) {
     avgRating,
     calendar,
     awayDays,
-    musicGenres,
+    movieGenres,
   } = userInfo;
 
   awayDays && (awayDays = awayDays.map(({ date }) => date));
 
-  musicGenres &&
-    (musicGenres = musicGenres.map(({ id, name }) => ({ id, name })));
+  movieGenres &&
+    (movieGenres = movieGenres.map(({ id, name }) => ({ id, name })));
 
   const outputValue = mutateNullToUndefined({
     id,
@@ -72,7 +72,7 @@ export function userInfoSelector(userInfo) {
     avgRating,
     calendar,
     awayDays,
-    musicGenres,
+    movieGenres,
   });
 
   CACHE_USER_INFO[inputValue] = outputValue;

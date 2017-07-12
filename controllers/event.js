@@ -1,6 +1,6 @@
 import base64 from 'base-64';
 import db, { calendarAttr, getRole, djId, orgId } from '~/models';
-const { Event, User, Calendar, AwayDay, MusicGenre } = db;
+const { Event, User, Calendar, AwayDay, MovieGenre } = db;
 import { getCoords } from '~/utils/googleApi';
 import { distToDegreeLat, distToDegreeLon } from '~/utils/geo';
 import { userInfoSelector } from '~/selectors/user';
@@ -35,7 +35,7 @@ export default class EventsController {
       priceMin = 0,
       priceMax = 99999999,
       date,
-      musicGenre,
+      movieGenre,
       city,
       maxDistance,
     } = ctx.query;
@@ -54,7 +54,7 @@ export default class EventsController {
 
     // const isoDate = new Date(Number(date)).toISOString().split('T')[0];
 
-    // const genres = [...base64.decode(musicGenre).split(',')];
+    // const genres = [...base64.decode(movieGenre).split(',')];
 
     // const lat = distToDegreeLat(maxDistance);
     // const long = distToDegreeLon(maxDistance, lat);
@@ -66,7 +66,7 @@ export default class EventsController {
     // const users = await User.findAll({
     //   where: {
     //     $and: {
-    //       '$musicGenres.name$': {
+    //       '$movieGenres.name$': {
     //         $in: genres,
     //       },
     //       lat: {
@@ -89,7 +89,7 @@ export default class EventsController {
     //       attributes: ['date'],
     //     },
     //     {
-    //       model: MusicGenre,
+    //       model: MovieGenre,
     //       attributes: ['name'],
     //     },
     //   ],
@@ -110,7 +110,7 @@ export default class EventsController {
           attributes: ['date'],
         },
         {
-          model: MusicGenre,
+          model: MovieGenre,
           attributes: ['id', 'name'],
         },
       ],

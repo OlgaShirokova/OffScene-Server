@@ -1,6 +1,6 @@
 import db, { eventsAttr, getRole, userInfoIncludes } from '~/models';
 import { userInfoSelector } from '~/selectors/user';
-const { User, Calendar, AwayDay, Event, MusicGenre } = db;
+const { User, Calendar, AwayDay, Event, MovieGenre } = db;
 import { getCoords } from '~/utils/googleApi';
 import { uploadPicture } from '~/utils/awsSdk';
 
@@ -65,7 +65,7 @@ export default class UsersController {
     let {
       calendar,
       awayDays = [],
-      musicGenres = [],
+      movieGenres = [],
       ...userInfo
     } = ctx.request.body;
 
@@ -84,8 +84,8 @@ export default class UsersController {
       userInfo.long = coords.long;
 
       awayDays = awayDays.map(date => ({ date, userId }));
-      musicGenres = musicGenres.map(musicGenreId => ({
-        musicGenreId,
+      movieGenres = movieGenres.map(movieGenreId => ({
+        movieGenreId,
         userId,
       }));
 
@@ -95,7 +95,7 @@ export default class UsersController {
           ? Calendar.update(calendar, { where: { id: storedCalendar.id } })
           : Calendar.create({ ...calendar, userId }),
         AwayDay.bulkCreate(awayDays),
-        db.connection.models.djGenres.bulkCreate(musicGenres),
+        db.connection.models.djGenres.bulkCreate(movieGenres),
       ]);
     } catch (err) {
       ctx.throw(400, 'Invalid Input'); // in 99 % of the cases it's going to be the cause of the error, the other 1 % is db reachability issues
