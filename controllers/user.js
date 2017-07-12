@@ -44,10 +44,10 @@ export default class UsersController {
   }
 
   async userInfo(ctx) {
-    const { id: djId } = ctx.params;
+    const { id: actorId } = ctx.params;
 
     try {
-      const user = await User.getInfoById(djId, userInfoSelector);
+      const user = await User.getInfoById(actorId, userInfoSelector);
 
       if (!user || user.role === 1) {
         // user does not exist or is an organizer
@@ -95,7 +95,7 @@ export default class UsersController {
           ? Calendar.update(calendar, { where: { id: storedCalendar.id } })
           : Calendar.create({ ...calendar, userId }),
         AwayDay.bulkCreate(awayDays),
-        db.connection.models.djGenres.bulkCreate(movieGenres),
+        db.connection.models.actorGenres.bulkCreate(movieGenres),
       ]);
     } catch (err) {
       ctx.throw(400, 'Invalid Input'); // in 99 % of the cases it's going to be the cause of the error, the other 1 % is db reachability issues

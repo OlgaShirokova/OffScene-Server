@@ -13,8 +13,8 @@ const coords = { lat: 41.3850639, long: 2.1734035 };
 const getCoordsStub = sinon.stub();
 getCoordsStub.withArgs(city).returns(coords);
 
-const djInfo = {
-  email: 'dj@gmail.com',
+const actorInfo = {
+  email: 'actor@gmail.com',
   password: 'test',
   role: 0,
 };
@@ -75,7 +75,7 @@ describe('offers', function() {
   });
 
   it('should throw an error if the user performing this action is not an organizer', async () => {
-    const ctx = await createUserAndLogin(djInfo);
+    const ctx = await createUserAndLogin(actorInfo);
     try {
       await eventsController.offers(ctx);
     } catch (err) {
@@ -85,11 +85,11 @@ describe('offers', function() {
   });
 
   it('should throw an error if the city provided is not a valid city', async () => {
-    let ctx = await createUserAndLogin(djInfo);
-    const djId = ctx.user.id;
+    let ctx = await createUserAndLogin(actorInfo);
+    const actorId = ctx.user.id;
     ctx = await createUserAndLogin(orgInfo);
     ctx.request.body = {
-      djId,
+      actorId,
       price: 8000,
       location: 'aaaaaa',
     };
@@ -101,10 +101,10 @@ describe('offers', function() {
     }
   });
 
-  it('should throw an error if the dj provided is not existent', async () => {
+  it('should throw an error if the actor provided is not existent', async () => {
     const ctx = await createUserAndLogin(orgInfo);
     ctx.request.body = {
-      djId: 30,
+      actorId: 30,
       price: 3000,
       location: 'Madrid',
     };
@@ -117,11 +117,11 @@ describe('offers', function() {
   });
 
   it('should create the event withouth any error', async () => {
-    let ctx = await createUserAndLogin(djInfo);
-    const djId = ctx.user.id;
+    let ctx = await createUserAndLogin(actorInfo);
+    const actorId = ctx.user.id;
     ctx = await createUserAndLogin(orgInfo);
     ctx.request.body = {
-      djId,
+      actorId,
       price: 8000,
       location: 'Barcelona',
     };
@@ -160,18 +160,18 @@ describe('feedback', function() {
   });
 
   it('should throw an error if the authenticated user already provided feedback', async () => {
-    let ctx = await createUserAndLogin(djInfo);
-    const djId = await ctx.user.id;
+    let ctx = await createUserAndLogin(actorInfo);
+    const actorId = await ctx.user.id;
     ctx = await createUserAndLogin(orgInfo);
     ctx.request.body = {
-      djId,
+      actorId,
       price: 8000,
       location: 'Barcelona',
     };
     await eventsController.offers(ctx);
     const event = await Event.find({
       where: {
-        djId,
+        actorId,
         orgId: ctx.user.id,
       },
     });
@@ -189,18 +189,18 @@ describe('feedback', function() {
   });
 
   it('should succefully create new feedback', async () => {
-    let ctx = await createUserAndLogin(djInfo);
-    const djId = await ctx.user.id;
+    let ctx = await createUserAndLogin(actorInfo);
+    const actorId = await ctx.user.id;
     ctx = await createUserAndLogin(orgInfo);
     ctx.request.body = {
-      djId,
+      actorId,
       price: 8000,
       location: 'Barcelona',
     };
     await eventsController.offers(ctx);
     const event = await Event.find({
       where: {
-        djId,
+        actorId,
         orgId: ctx.user.id,
       },
     });
@@ -239,11 +239,11 @@ describe('updateOffer', function() {
   });
 
   it('should throw an error if its not the turn of the user to change the stats', async () => {
-    let ctx = await createUserAndLogin(djInfo);
-    const djId = ctx.user.id;
+    let ctx = await createUserAndLogin(actorInfo);
+    const actorId = ctx.user.id;
     ctx = await createUserAndLogin(orgInfo);
     ctx.request.body = {
-      djId,
+      actorId,
       price: 8000,
       location: 'Barcelona',
     };
@@ -252,7 +252,7 @@ describe('updateOffer', function() {
 
     const event = await Event.find({
       where: {
-        djId,
+        actorId,
         orgId: ctx.user.id,
       },
     });
@@ -271,11 +271,11 @@ describe('updateOffer', function() {
   });
 
   it('should update the status of the event succefully', async () => {
-    let ctx = await createUserAndLogin(djInfo);
-    const djId = ctx.user.id;
+    let ctx = await createUserAndLogin(actorInfo);
+    const actorId = ctx.user.id;
     ctx = await createUserAndLogin(orgInfo);
     ctx.request.body = {
-      djId,
+      actorId,
       price: 8000,
       location: 'Barcelona',
     };
@@ -284,12 +284,12 @@ describe('updateOffer', function() {
 
     const event = await Event.find({
       where: {
-        djId,
+        actorId,
         orgId: ctx.user.id,
       },
     });
     (ctx.header.authorization = `Basic ${base64.encode(
-      djInfo.email + ':' + djInfo.password
+      actorInfo.email + ':' + actorInfo.password
     )}`), await AuthController.signIn(ctx);
     ctx.header.authorization = `Bearer ${ctx.body.authToken}`;
     await AuthController.requireAuth(ctx, () => 1);
@@ -313,8 +313,8 @@ describe('search', function() {
     eventsController.getCoords = getCoordsStub;
   });
 
-  it('should return a list of djs filtered by the specified criteria', async () => {
-    let ctx = await createUserAndLogin(djInfo);
+  it('should return a list of actors filtered by the specified criteria', async () => {
+    let ctx = await createUserAndLogin(actorInfo);
 
     ctx.request.body = {
       calendar: {
@@ -330,10 +330,10 @@ describe('search', function() {
       priceWd: 8000,
       city: 'Barcelona',
     };
-    const dj1Id = ctx.user.id;
+    const actor1Id = ctx.user.id;
     await usersController.updateProfile(ctx);
     ctx = await createUserAndLogin({
-      email: 'dj2@gmail.com',
+      email: 'actor2@gmail.com',
       password: 'test',
       role: 0,
     });

@@ -88,7 +88,7 @@ async function createMockData() {
     avgRating: parseFloat(Math.random() * 5).toFixed(2),
   });
 
-  const dj = await User.create({
+  const actor = await User.create({
     email: faker.internet.email(),
     password: 'test',
     name: faker.name.findName(),
@@ -108,11 +108,11 @@ async function createMockData() {
   const awayDay = await AwayDay.bulkCreate([
     {
       date: faker.date.future(),
-      userId: dj.get().id,
+      userId: actor.get().id,
     },
     {
       date: faker.date.future(),
-      userId: dj.get().id,
+      userId: actor.get().id,
     },
   ]);
 
@@ -124,49 +124,49 @@ async function createMockData() {
     friday: Math.round(Math.random()),
     saturday: Math.round(Math.random()),
     sunday: Math.round(Math.random()),
-    userId: dj.get().id,
+    userId: actor.get().id,
   });
 
   const event = await Event.bulkCreate([
     {
       date: faker.date.future(),
       status: Math.round(Math.random() * 4),
-      djRating: parseFloat(Math.random() * 5).toFixed(2),
+      actorRating: parseFloat(Math.random() * 5).toFixed(2),
       orgRating: parseFloat(Math.random() * 5).toFixed(2),
       price: Math.round(Math.random() * 10000 * 100),
       location: eventCity,
       lat: eLat,
       long: eLng,
-      djId: dj.get().id,
+      actorId: actor.get().id,
       orgId: org.get().id,
     },
     {
       date: faker.date.future(),
       status: Math.round(Math.random() * 4),
-      djRating: parseFloat(Math.random() * 5).toFixed(2),
+      actorRating: parseFloat(Math.random() * 5).toFixed(2),
       orgRating: parseFloat(Math.random() * 5).toFixed(2),
       price: Math.round(Math.random() * 10000 * 100),
       location: eventCity,
       lat: eLat,
       long: eLng,
-      djId: dj.get().id,
+      actorId: actor.get().id,
       orgId: org.get().id,
     },
   ]);
 
   const blockedUser = await db.connection.models.blockedUser.create({
-    userId: dj.get().id,
+    userId: actor.get().id,
     blockedUserId: org.get().id,
   });
 
-  const djGenres = await db.connection.models.djGenres.bulkCreate([
+  const actorGenres = await db.connection.models.actorGenres.bulkCreate([
     {
       movieGenreId: '1',
-      userId: dj.get().id,
+      userId: actor.get().id,
     },
     {
       movieGenreId: '2',
-      userId: dj.get().id,
+      userId: actor.get().id,
     },
   ]);
 }

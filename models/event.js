@@ -4,7 +4,7 @@ export default function(sequelize, DataTypes) {
     {
       date: DataTypes.DATE,
       status: DataTypes.INTEGER,
-      djRating: DataTypes.FLOAT,
+      actorRating: DataTypes.FLOAT,
       orgRating: DataTypes.FLOAT,
       price: DataTypes.INTEGER,
       location: DataTypes.STRING,
@@ -13,7 +13,7 @@ export default function(sequelize, DataTypes) {
     },
     {
       associate: function({ Event, User }) {
-        Event.belongsTo(User, { as: 'dj' });
+        Event.belongsTo(User, { as: 'actor' });
         Event.belongsTo(User, { as: 'org' });
       },
     }

@@ -63,7 +63,7 @@ describe('events', function() {
     });
     const event = await Event.create({
       orgId: organizer.id,
-      djId: ctx.user.id,
+      actorId: ctx.user.id,
     });
 
     await usersController.events(ctx);
@@ -71,7 +71,7 @@ describe('events', function() {
     expect(ctx.body).to.be.an('array');
     expect(ctx.body.length).to.equal(1);
     expect(ctx.body[0].id).to.equal(event.id);
-    expect(ctx.body[0].djId).to.equal(event.djId);
+    expect(ctx.body[0].actorId).to.equal(event.actorId);
     expect(ctx.body[0].orgId).to.equal(event.orgId);
   });
 });
@@ -133,7 +133,7 @@ describe('updateProfile', function() {
     await MovieGenre.create({
       name: 'action',
     });
-    await db.connection.models.djGenres.bulkCreate([
+    await db.connection.models.actorGenres.bulkCreate([
       {
         movieGenreId: '1',
         userId: ctx.body.id,
@@ -319,22 +319,22 @@ describe('blockUser', function() {
 
   it('should fail without throwing errors when the user to block its not an organizer', async () => {
     ctx.request.body = {
-      email: 'dj@gmail.com',
+      email: 'actor@gmail.com',
       password: 'test',
       role: 0,
     };
 
     await AuthController.signUp(ctx);
-    const dj = await User.find({
+    const actor = await User.find({
       where: { email: ctx.request.body.email },
     });
-    ctx.params.id = dj.id;
+    ctx.params.id = actor.id;
     await usersController.blockUser(ctx);
     expect(ctx.status).to.equal(201);
     const blockedUser = await db.connection.models.blockedUser.find({
       where: {
         userId: ctx.user.id,
-        blockedUserId: dj.id,
+        blockedUserId: actor.id,
       },
     });
     expect(blockedUser).to.equal(null);

@@ -9,7 +9,7 @@ export default function(sequelize, DataTypes) {
     },
     {
       associate: function({ MovieGenre, User }) {
-        MovieGenre.belongsToMany(User, { through: 'djGenres' });
+        MovieGenre.belongsToMany(User, { through: 'actorGenres' });
       },
       timestamps: false,
     }

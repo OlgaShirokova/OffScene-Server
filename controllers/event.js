@@ -1,5 +1,5 @@
 import base64 from 'base-64';
-import db, { calendarAttr, getRole, djId, orgId } from '~/models';
+import db, { calendarAttr, getRole, actorId, orgId } from '~/models';
 const { Event, User, Calendar, AwayDay, MovieGenre } = db;
 import { getCoords } from '~/utils/googleApi';
 import { distToDegreeLat, distToDegreeLon } from '~/utils/geo';
@@ -31,6 +31,7 @@ export default class EventsController {
   }
 
   async search(ctx) {
+    console.log('SEARCH');
     let {
       priceMin = 0,
       priceMax = 99999999,
@@ -122,7 +123,7 @@ export default class EventsController {
   async offers(ctx) {
     const { id: orgId, role } = ctx.user;
 
-    const { djId, price, location, date } = ctx.request.body;
+    const { actorId, price, location, date } = ctx.request.body;
     console.log('offers', ctx.request.body);
     if (role !== 1) {
       ctx.throw(400, 'Not Authorized');
@@ -133,8 +134,8 @@ export default class EventsController {
     }
     console.log(1);
     try {
-      var [dj, coords] = await Promise.all([
-        User.findById(djId),
+      var [actor, coords] = await Promise.all([
+        User.findById(actorId),
         getCoords(location),
       ]);
     } catch (err) {
@@ -143,7 +144,7 @@ export default class EventsController {
 
     console.log(2);
 
-    if (!dj || !coords) {
+    if (!actor || !coords) {
       ctx.throw(400, 'Invalid Input');
     }
     console.log(2);
@@ -151,7 +152,7 @@ export default class EventsController {
 
     try {
       await Event.create({
-        djId,
+        actorId,
         orgId,
         price,
         status: 0,
@@ -170,7 +171,9 @@ export default class EventsController {
   async feedback(ctx) {
     const { eventId, rating } = ctx.request.body;
     const event = await Event.findById(eventId);
-    const otherParticipant = ['djRating', 'orgRating'][+!ctx.user.get().role];
+    const otherParticipant = ['actorRating', 'orgRating'][
+      +!ctx.user.get().role
+    ];
 
     if (!event) {
       ctx.throw(400, 'Invalid Input');
@@ -203,7 +206,7 @@ export default class EventsController {
 
     if (
       !(
-        (role === djId &&
+        (role === actorId &&
           event.status === 0 &&
           (newStatus === 1 || newStatus === 2)) ||
         (role === orgId &&

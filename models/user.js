@@ -35,7 +35,7 @@ export default function(sequelize, DataTypes) {
           through: 'blockedUser',
           as: 'blockedUsers',
         });
-        User.belongsToMany(MovieGenre, { through: 'djGenres' });
+        User.belongsToMany(MovieGenre, { through: 'actorGenres' });
       },
 
       hooks: {

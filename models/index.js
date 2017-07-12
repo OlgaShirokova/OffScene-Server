@@ -265,7 +265,7 @@ export const eventsAttr = [
   'id',
   'date',
   'status',
-  'djRating',
+  'actorRating',
   'orgRating',
   'price',
   'location',
@@ -273,15 +273,15 @@ export const eventsAttr = [
   'long',
   'createdAt',
   'updatedAt',
-  'djId',
+  'actorId',
   'orgId',
 ];
 
-export const djId = 'djId';
+export const actorId = 'actorId';
 export const orgId = 'orgId';
 
 export function getRole(ctx) {
-  return ['djId', 'orgId'][ctx.user.role];
+  return ['actorId', 'orgId'][ctx.user.role];
 }
 
 export const userInfoIncludes = [
