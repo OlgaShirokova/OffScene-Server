@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { AuthController, UserController, AppController } from '~/controllers';
 import db from '~/test';
-const { User, Event, MovieGenre, AwayDay, Calendar } = db;
+const { User, Performance, MovieGenre, AwayDay, Calendar } = db;
 
 const movieInput = {
   request: {

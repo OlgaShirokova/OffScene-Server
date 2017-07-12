@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import { AuthController, UserController } from '~/controllers';
 import { userInfoSelector } from '~/selectors/user';
 import db from '~/test';
-const { User, Event, MovieGenre, AwayDay, Calendar } = db;
+const { User, Performance, MovieGenre, AwayDay, Calendar } = db;
 
 const usersController = new UserController();
 
@@ -33,7 +33,7 @@ const userUpdateInfo = {
   swift: 'XF35',
 };
 
-describe('events', function() {
+describe('performances', function() {
   let ctx;
 
   beforeEach(async () => {
@@ -44,13 +44,13 @@ describe('events', function() {
     await db.connection.sync({ logging: false, force: true });
   });
 
-  it('should return an empty list if the user its not involved in any event', async () => {
-    await usersController.events(ctx);
+  it('should return an empty list if the user its not involved in any performance', async () => {
+    await usersController.performances(ctx);
     expect(ctx.body).to.be.an('array');
     expect(ctx.body.length).to.equal(0);
   });
 
-  it('should return a list of events that the user is involved', async () => {
+  it('should return a list of performances that the user is involved', async () => {
     ctx.request.body = {
       email: 'organizer@gmail.com',
       password: 'test',
@@ -61,18 +61,18 @@ describe('events', function() {
     const organizer = await User.find({
       where: { email: ctx.request.body.email },
     });
-    const event = await Event.create({
+    const performance = await Performance.create({
       orgId: organizer.id,
       actorId: ctx.user.id,
     });
 
-    await usersController.events(ctx);
+    await usersController.performances(ctx);
     expect(ctx.status).to.equal(201);
     expect(ctx.body).to.be.an('array');
     expect(ctx.body.length).to.equal(1);
-    expect(ctx.body[0].id).to.equal(event.id);
-    expect(ctx.body[0].actorId).to.equal(event.actorId);
-    expect(ctx.body[0].orgId).to.equal(event.orgId);
+    expect(ctx.body[0].id).to.equal(performance.id);
+    expect(ctx.body[0].actorId).to.equal(performance.actorId);
+    expect(ctx.body[0].orgId).to.equal(performance.orgId);
   });
 });
 
@@ -212,8 +212,8 @@ const requestPicture = {
     files: {
       picture: {
         domain: null,
-        _events: {},
-        _eventsCount: 0,
+        _performances: {},
+        _performancesCount: 0,
         _maxListeners: undefined,
         size: 389715,
         path:

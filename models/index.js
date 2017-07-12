@@ -261,7 +261,7 @@ export const calendarAttr = [
   'sunday',
 ];
 
-export const eventsAttr = [
+export const performancesAttr = [
   'id',
   'date',
   'status',

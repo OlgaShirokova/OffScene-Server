@@ -2,12 +2,12 @@ import Router from 'koa-router';
 import {
   AuthController,
   UserController,
-  EventController,
+  PerformanceController,
   AppController,
 } from '~/controllers';
 
 const usersController = new UserController();
-const eventsController = new EventController();
+const performancesController = new PerformanceController();
 
 const router = new Router();
 
@@ -16,7 +16,11 @@ router
   .post('/sign-up', AuthController.signUp);
 
 router
-  .get('/events', AuthController.requireAuth, usersController.events) // get events that I'm or I had been involved (logged user)
+  .get(
+    '/performances',
+    AuthController.requireAuth,
+    usersController.performances
+  ) // get performances that I'm or I had been involved (logged user)
   .get('/users/:id', AuthController.requireAuth, usersController.userInfo) // get user info
   .post(
     '/users/:id/block',
@@ -29,10 +33,18 @@ router
   .post('/picture', AuthController.requireAuth, usersController.updatePicture); // update profile picture
 
 router
-  .get('/search', eventsController.search) // get all actors that match a certain criteria specified as query params
-  .post('/offers', AuthController.requireAuth, eventsController.offers) // send offer for event
-  .post('/feedback', AuthController.requireAuth, eventsController.feedback) // give feedback
-  .put('/offers/:id', AuthController.requireAuth, eventsController.updateOffer); // change offer status
+  .get('/search', performancesController.search) // get all actors that match a certain criteria specified as query params
+  .post('/offers', AuthController.requireAuth, performancesController.offers) // send offer for performance
+  .post(
+    '/feedback',
+    AuthController.requireAuth,
+    performancesController.feedback
+  ) // give feedback
+  .put(
+    '/offers/:id',
+    AuthController.requireAuth,
+    performancesController.updateOffer
+  ); // change offer status
 
 router.get('/genres', AppController.genres);
 

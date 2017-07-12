@@ -27,10 +27,16 @@ export default function(sequelize, DataTypes) {
       swift: DataTypes.STRING,
     },
     {
-      associate: function({ User, AwayDay, Calendar, Event, MovieGenre }) {
+      associate: function({
+        User,
+        AwayDay,
+        Calendar,
+        Performance,
+        MovieGenre,
+      }) {
         User.hasMany(AwayDay);
         User.hasOne(Calendar);
-        // User.hasMany(Event);
+        // User.hasMany(Performance);
         User.belongsToMany(User, {
           through: 'blockedUser',
           as: 'blockedUsers',

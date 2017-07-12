@@ -1,6 +1,6 @@
-import db, { eventsAttr, getRole, userInfoIncludes } from '~/models';
+import db, { performancesAttr, getRole, userInfoIncludes } from '~/models';
 import { userInfoSelector } from '~/selectors/user';
-const { User, Calendar, AwayDay, Event, MovieGenre } = db;
+const { User, Calendar, AwayDay, Performance, MovieGenre } = db;
 import { getCoords } from '~/utils/googleApi';
 import { uploadPicture } from '~/utils/awsSdk';
 
@@ -28,15 +28,15 @@ export default class UsersController {
     }
   };
 
-  async events(ctx) {
+  async performances(ctx) {
     const role = getRole(ctx);
 
     try {
-      ctx.body = await Event.findAll({
+      ctx.body = await Performance.findAll({
         where: {
           [role]: ctx.user.id,
         },
-        attributes: eventsAttr,
+        attributes: performancesAttr,
       });
     } catch (err) {
       ctx.throw(500, 'Service not Available');

@@ -4,11 +4,11 @@ import Sequelize from 'sequelize';
 import db from '~/models';
 // import config from '~/config';
 import nconf from '~/config/nconf';
-const { User, AwayDay, Calendar, Event, MovieGenre } = db;
+const { User, AwayDay, Calendar, Performance, MovieGenre } = db;
 
 const NUM_ITERATIONS = 40;
 let userCity = '';
-let eventCity = '';
+let performanceCity = '';
 let uLat = 0;
 let uLng = 0;
 let eLat = 0;
@@ -23,9 +23,9 @@ db.connection
     createMockGenres();
     for (var i = 0; i < NUM_ITERATIONS; i++) {
       userCity = 'Barcelona';
-      eventCity = 'Paris';
+      performanceCity = 'Paris';
       getUserCity(userCity);
-      getEventCity(eventCity).then(function() {
+      getPerformanceCity(performanceCity).then(function() {
         createMockData();
       });
     }
@@ -47,11 +47,11 @@ function getUserCity(userCity) {
     .catch(err => console.log(err));
 }
 
-function getEventCity(eventCity) {
+function getPerformanceCity(performanceCity) {
   return axios
     .get(`https://maps.googleapis.com/maps/api/geocode/json?`, {
       params: {
-        address: eventCity,
+        address: performanceCity,
         key: 'AIzaSyB8MoySVfE5fBLlpQhCnE_i_Ammrpp4BgM',
       },
     })
@@ -127,14 +127,14 @@ async function createMockData() {
     userId: actor.get().id,
   });
 
-  const event = await Event.bulkCreate([
+  const performance = await Performance.bulkCreate([
     {
       date: faker.date.future(),
       status: Math.round(Math.random() * 4),
       actorRating: parseFloat(Math.random() * 5).toFixed(2),
       orgRating: parseFloat(Math.random() * 5).toFixed(2),
       price: Math.round(Math.random() * 10000 * 100),
-      location: eventCity,
+      location: performanceCity,
       lat: eLat,
       long: eLng,
       actorId: actor.get().id,
@@ -146,7 +146,7 @@ async function createMockData() {
       actorRating: parseFloat(Math.random() * 5).toFixed(2),
       orgRating: parseFloat(Math.random() * 5).toFixed(2),
       price: Math.round(Math.random() * 10000 * 100),
-      location: eventCity,
+      location: performanceCity,
       lat: eLat,
       long: eLng,
       actorId: actor.get().id,
