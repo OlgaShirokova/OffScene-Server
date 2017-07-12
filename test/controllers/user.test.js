@@ -27,7 +27,7 @@ const userUpdateInfo = {
   priceWe: 1000000,
   priceWd: 500000,
   city: 'Barcelona',
-  movieGenres: ['rap', 'dance'],
+  movieGenres: ['comedy', 'action'],
   awayDays: ['2017-06-30T00:00:00+00:00', '2017-05-30T00:00:00+00:00'],
   bankAccount: 'ES426482984767436846874276346',
   swift: 'XF35',
@@ -128,10 +128,10 @@ describe('updateProfile', function() {
     usersController = new UserController();
     usersController.getCoords = getCoordsStub;
     await MovieGenre.create({
-      name: 'rap',
+      name: 'comedy',
     });
     await MovieGenre.create({
-      name: 'dance',
+      name: 'action',
     });
     await db.connection.models.djGenres.bulkCreate([
       {

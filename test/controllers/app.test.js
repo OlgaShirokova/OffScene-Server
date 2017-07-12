@@ -3,10 +3,10 @@ import { AuthController, UserController, AppController } from '~/controllers';
 import db from '~/test';
 const { User, Event, MovieGenre, AwayDay, Calendar } = db;
 
-const musicInput = {
+const movieInput = {
   request: {
     method: 'GET',
-    url: '/genres?startWith=ele',
+    url: '/genres?startWith=com',
     header: {
       host: 'localhost:3000',
       connection: 'keep-alive',
@@ -21,7 +21,7 @@ const musicInput = {
   },
   response: { status: 404, message: 'Not Found', header: {} },
   app: { subdomainOffset: 2, proxy: false, env: 'development' },
-  originalUrl: '/genres?startWith=techno',
+  originalUrl: '/genres?startWith=com',
   req: '<original node req>',
   res: '<original node res>',
   socket: '<original node socket>',
@@ -32,10 +32,10 @@ describe('autocompleteMovieGenres', function() {
 
   beforeEach(async () => {
     await MovieGenre.create({
-      name: 'electro',
+      name: 'comedy',
     });
     await MovieGenre.create({
-      name: 'hard hop',
+      name: 'action',
     });
   });
 
@@ -43,11 +43,11 @@ describe('autocompleteMovieGenres', function() {
     await db.connection.sync({ logging: false, force: true });
   });
 
-  it('should show the matching music genres', async () => {
-    ctx = musicInput;
+  it('should show the matching movie genres', async () => {
+    ctx = movieInput;
     await AppController.genres(ctx);
 
-    const response = 'electro';
+    const response = 'comedy';
     expect(ctx.status).to.equal(200);
     expect(ctx.body.includes(response)).to.eql(true);
     expect(ctx.body).to.be.a('array');
