@@ -49,202 +49,112 @@ connection
 async function createMovieGenres() {
   const movieGenre = await db.MovieGenre.bulkCreate([
     {
-      name: 'acid',
+      name: 'absurdist',
     },
     {
-      name: 'alternative',
+      name: 'action',
     },
     {
-      name: 'band',
+      name: 'adult',
     },
     {
-      name: 'bass',
+      name: 'adventure',
     },
     {
-      name: 'breaks',
+      name: 'animation',
     },
     {
-      name: 'breakbeat',
+      name: 'comedy',
     },
     {
-      name: 'chill out',
+      name: 'crime',
     },
     {
-      name: 'commercial dance',
+      name: 'drama',
     },
     {
-      name: 'contemporary',
+      name: 'documentary',
     },
     {
-      name: 'cosmic',
+      name: 'epic',
     },
     {
-      name: 'crunk',
+      name: 'experimental',
     },
     {
-      name: 'dance',
+      name: 'fantasy',
     },
     {
-      name: 'dancehall',
+      name: 'family',
     },
     {
-      name: 'dance-pop',
+      name: 'historical',
     },
     {
-      name: 'dance-punk',
+      name: 'historical fiction',
     },
     {
-      name: 'disco',
+      name: 'horror',
     },
     {
-      name: 'downtempo',
+      name: 'magical realism',
     },
     {
-      name: 'drum',
+      name: 'musical',
     },
     {
-      name: 'drum & bass',
+      name: 'mystery',
     },
     {
-      name: 'dub',
+      name: 'paranoid',
     },
     {
-      name: 'dubstep',
+      name: 'philosophical',
     },
     {
-      name: 'ebm',
+      name: 'political',
     },
     {
-      name: 'electro house',
+      name: 'romance',
     },
     {
-      name: 'electroclash',
+      name: 'saga',
     },
     {
-      name: 'electro-industrial',
+      name: 'satire',
     },
     {
-      name: 'electronica',
+      name: 'science fiction',
     },
     {
-      name: 'eurobeat',
+      name: 'series',
     },
     {
-      name: 'freestyle',
+      name: 'shows',
     },
     {
-      name: 'funk',
+      name: 'silent',
     },
     {
-      name: 'garage',
+      name: 'slice of life',
     },
     {
-      name: 'grime',
+      name: 'spectacular',
     },
     {
-      name: 'happy',
+      name: 'spy film',
     },
     {
-      name: 'hard dance',
+      name: 'thriller',
     },
     {
-      name: 'hardcore',
+      name: 'urban',
     },
     {
-      name: 'hard techno',
+      name: 'war',
     },
     {
-      name: 'hardstyle',
-    },
-    {
-      name: 'hi-nrg',
-    },
-    {
-      name: 'hip',
-    },
-    {
-      name: 'hip-hop',
-    },
-    {
-      name: 'house',
-    },
-    {
-      name: 'indie dance',
-    },
-    {
-      name: 'italo',
-    },
-    {
-      name: 'jazz',
-    },
-    {
-      name: 'juke',
-    },
-    {
-      name: 'madchester',
-    },
-    {
-      name: 'minimal',
-    },
-    {
-      name: 'moombahton',
-    },
-    {
-      name: 'motown',
-    },
-    {
-      name: 'nu disco',
-    },
-    {
-      name: 'open format',
-    },
-    {
-      name: 'progressive house',
-    },
-    {
-      name: 'psy-trance',
-    },
-    {
-      name: 'r&b',
-    },
-    {
-      name: 'rave',
-    },
-    {
-      name: 'reggae',
-    },
-    {
-      name: 'rock',
-    },
-    {
-      name: 'roll',
-    },
-    {
-      name: 'swing',
-    },
-    {
-      name: 'synthpop',
-    },
-    {
-      name: 'tech House',
-    },
-    {
-      name: 'techno',
-    },
-    {
-      name: 'technopop',
-    },
-    {
-      name: 'trance',
-    },
-    {
-      name: 'trap',
-    },
-    {
-      name: 'underground',
-    },
-    {
-      name: 'wave',
+      name: 'western',
     },
   ]);
 }
