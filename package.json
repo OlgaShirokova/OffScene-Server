@@ -3,28 +3,49 @@
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --exec 'babel-node --harmony-async-await' ./app.js",
-    "precommit": "lint-staged --verbose"
+    "dev": "nodemon --exec 'babel-node' ./app.js",
+    "precommit": "lint-staged --verbose",
+    "test": "NODE_ENV=testing mocha --timeout 10000 --require babel-core/register --require babel-polyfill --recursive",
+    "test:watch": "NODE_ENV=testing nodemon --exec 'mocha --timeout 10000 --require babel-core/register --require babel-polyfill --recursive'",
+    "seed": "babel-node ./utils/seeds.js"
   },
   "devDependencies": {
     "babel-cli": "6.24.1",
     "babel-core": "6.25.0",
     "babel-loader": "7.1.0",
     "babel-plugin-root-import": "5.1.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "6.23.0",
     "babel-preset-latest": "6.24.1",
+    "chai": "4.0.2",
     "eslint": "4.0.0",
     "eslint-config-prettier": "2.2.0",
+    "eslint-plugin-import": "^2.6.0",
+    "eslint-plugin-prettier": "^2.1.2",
     "faker": "4.1.0",
     "husky": "0.14.0",
     "koa-logger": "3.0.0",
     "lint-staged": "4.0.0",
+    "mocha": "3.4.2",
     "nodemon": "1.11.0",
-    "prettier": "1.4.4"
+    "prettier": "1.4.4",
+    "sqlite3": "^3.1.8"
   },
   "dependencies": {
+    "aws-sdk": "^2.78.0",
+    "axios": "0.16.2",
+    "babel-eslint": "^7.2.3",
+    "base-64": "0.1.0",
+    "bcrypt": "1.0.2",
+    "eslint-plugin-babel": "^4.1.1",
+    "jwt-simple": "0.5.1",
     "koa": "2.3.0",
-    "koa-body": "2.1.0",
-    "koa-router": "7.2.1"
+    "koa-body": "^2.3.0",
+    "koa-router": "7.2.1",
+    "koa2-cors": "2.0.3",
+    "nconf": "^0.8.4",
+    "sequelize": "^4.2.0",
+    "sinon": "^2.3.6"
   },
   "lint-staged": {
     "*.js": [

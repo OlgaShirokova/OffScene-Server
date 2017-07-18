@@ -3,12 +3,15 @@
     "prettier"
   ],
   "plugins": [
-    "prettier"
+    "prettier",
+    "import",
+    "babel"
   ],
   "globals": {
     "document": false
   },
   "parserOptions": {
+    "parser": "babel-eslint",
     "ecmaVersion": 2017,
     "sourceType": "module",
     "ecmaFeatures": {

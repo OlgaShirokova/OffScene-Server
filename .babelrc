@@ -3,6 +3,8 @@
     "latest"
   ],
   "plugins": [
-    "babel-plugin-root-import"
+    "babel-plugin-root-import",
+    "transform-object-rest-spread",
+    "transform-class-properties"
   ]
 }
